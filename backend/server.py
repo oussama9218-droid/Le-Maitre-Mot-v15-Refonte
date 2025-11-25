@@ -1583,7 +1583,8 @@ Chaque exercice doit avoir une difficulté {difficulte}. Respecte parfaitement l
 {MATH_FORMATTING_RULE}
 
 **Instructions cruciales** :
-1. Utilise des **valeurs numériques différentes et variées** pour chaque exercice (pas de répétition des mêmes données).
+1. **DIVERSITÉ DES POINTS** : Utilise des lettres DIFFÉRENTES pour chaque exercice (D,E,F puis M,N,P puis X,Y,Z etc.) - JAMAIS tous A,B,C !
+2. Utilise des **valeurs numériques différentes et variées** pour chaque exercice (pas de répétition des mêmes données).
 2. Le schéma doit toujours être placé dans `"donnees.schema"` et jamais dans `"enonce"`.
 3. L’énoncé doit contenir uniquement du texte lisible pour l’élève et sa formulation doit être clair comme il serait lu dans un manuel de mathématique à leur niveau.
 4. Le schéma doit suivre une structure claire (type, points, labels, segments, angles, etc.).
