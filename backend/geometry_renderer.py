@@ -245,7 +245,7 @@ class GeometryRenderer:
         """Render a square"""
         fig, ax = self._create_figure(5, 5)
         
-        points = data.get('points', ['A', 'B', 'C', 'D'])
+        points = data.get('points', self._get_smart_default_points(4, 'rectangle'))
         
         # Square coordinates
         coords = {
@@ -270,7 +270,7 @@ class GeometryRenderer:
         """Render a rectangle"""
         fig, ax = self._create_figure(6, 4)
         
-        points = data.get('points', ['A', 'B', 'C', 'D'])
+        points = data.get('points', self._get_smart_default_points(4, 'rectangle'))
         
         # Rectangle coordinates
         coords = {
@@ -332,7 +332,7 @@ class GeometryRenderer:
         """Render a parallelogram"""
         fig, ax = self._create_figure(6, 4)
         
-        points = data.get('points', ['A', 'B', 'C', 'D'])
+        points = data.get('points', self._get_smart_default_points(4, 'rectangle'))
         
         # Parallelogram coordinates
         coords = {
