@@ -1298,32 +1298,34 @@ async def generate_geometry_schema_with_ai(enonce: str) -> str:
         chat = LlmChat(
             api_key=emergent_key,
             session_id=f"schema_gen_{uuid.uuid4()}",
-            system_message="""En tant que moteur de génération de schémas, ton unique tâche est de créer un schéma géométrique JSON à partir de l'énoncé d'exercice.
+            system_message="""En tant que moteur de génération de schémas géométriques PRÉCIS, tu dois créer un schéma qui CORRESPOND EXACTEMENT à l'énoncé de l'exercice.
 
-**Instructions :**
-1. Analyse l'énoncé pour identifier les points, segments et longueurs mentionnés.
-2. Crée une structure JSON valide pour le schéma, comme dans l'exemple ci-dessous.
-3. Ne renvoie QUE le code JSON, sans texte ni explication supplémentaire.
-4. Si l'énoncé ne contient pas de géométrie, renvoie un objet JSON vide `{}`.
+**RÈGLE ABSOLUE** : Le schéma DOIT utiliser les MÊMES noms de points et dimensions que l'énoncé !
 
-**Exemple de JSON pour un triangle** :
+**Instructions critiques :**
+1. LIS attentivement l'énoncé pour identifier TOUS les noms de points mentionnés
+2. UTILISE exactement ces noms dans le schéma (pas de A,B,C génériques !)
+3. RESPECTE toutes les dimensions numériques mentionnées
+4. RESPECTE les propriétés géométriques (angles droits, etc.)
+
+**Exemples de correspondance correcte :**
+- Énoncé: "triangle DEF rectangle en E" → points: ["D", "E", "F"], angle droit en E
+- Énoncé: "AB = 5 cm et BC = 12 cm" → segments: [["A","B",{"longueur":"5 cm"}], ["B","C",{"longueur":"12 cm"}]]
+- Énoncé: "triangle GHI" → points: ["G", "H", "I"] (pas A, B, C !)
+
+**Format JSON requis :**
 {
-    "type": "triangle",
-    "points": ["A", "B", "C"],
-    "labels": {"A": "(0,8)", "B": "(0,0)", "C": "(6,0)"},
-    "segments": [["A","B", {"longueur": 8}], ["B","C", {"longueur": 6}]],
-    "angles": [["B", {"angle_droit": true}]]
+    "schema": {
+        "type": "triangle_rectangle",
+        "points": ["points_from_enonce"],
+        "segments": [["point1","point2",{"longueur":"value_from_enonce"}]],
+        "angles": [["point",{"angle_droit": true}]]
+    }
 }
 
-**RÈGLE CRITIQUE** : Si tu listes N points, tu DOIS fournir N coordonnées dans labels.
-Exemple INCORRECT: points: ["A","B","C","D"] avec labels: {"A":"(0,3)", "B":"(0,0)", "C":"(4,0)"}
-Exemple CORRECT: points: ["A","B","C","D"] avec labels: {"A":"(0,3)", "B":"(0,0)", "C":"(4,0)", "D":"(4,3)"}
-
-**Types de figures supportés** : triangle, triangle_rectangle, carre, rectangle, cercle, pyramide
-**IMPORTANT** : 
-- TOUJOURS fournir des coordonnées pour TOUS les points listés
-- Si points: ["A", "B", "C", "D"], alors labels DOIT contenir A, B, C ET D
-- Ne PAS générer trapeze ou autres types non supportés (sauf ceux listés ci-dessus)"""
+**Types supportés** : triangle, triangle_rectangle, carre, rectangle, cercle
+**INTERDIT** : Utiliser A,B,C quand l'énoncé mentionne d'autres lettres !
+**OBLIGATOIRE** : Correspondance exacte énoncé ↔ schéma"""
         ).with_model("openai", "gpt-4o")
         
         # Create focused prompt for schema generation with STRICT format requirements  
