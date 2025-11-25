@@ -384,9 +384,26 @@ class GeometryRenderer:
             return f'<span style="color: red; font-style: italic;">[Erreur rendu figure: {figure_type}]</span>'
     
     def render_geometry_to_base64(self, schema_data: Dict[str, Any]) -> str:
-        """Render a geometric figure from structured data as Base64 PNG (for web display)"""
+        """Render a geometric figure from structured data as Base64 PNG (for web display) - Version améliorée"""
         figure_type = schema_data.get('figure', 'triangle')
         
+        # Nouveau système SVG pour une meilleure qualité (converti en Base64)
+        try:
+            if figure_type == 'rectangle':
+                svg_content = geometry_svg_renderer.render_rectangle(schema_data)
+                return self._svg_to_base64(svg_content)
+            elif figure_type == 'triangle_rectangle':
+                svg_content = geometry_svg_renderer.render_triangle_rectangle(schema_data)
+                return self._svg_to_base64(svg_content)
+            elif figure_type == 'mediatrice' or figure_type == 'construction_mediatrice':
+                svg_content = geometry_svg_renderer.render_mediatrice_construction(schema_data)
+                return self._svg_to_base64(svg_content)
+        except Exception as e:
+            logger.error(f"Error with new SVG renderer for {figure_type}: {e}")
+            # Fallback vers l'ancien système
+            pass
+        
+        # Fallback vers l'ancien système matplotlib pour les autres types
         if figure_type in self.figure_renderers:
             try:
                 # Create figure and render based on type
