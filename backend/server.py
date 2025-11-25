@@ -2120,7 +2120,9 @@ JSON OBLIGATOIRE:
                 # CRITICAL: Generate Base64 image for frontend immediately
                 schema_img_base64 = process_schema_to_base64(schema_data)
                 if schema_img_base64:
-                    schema_img_base64 = f"data:image/png;base64,{schema_img_base64}"
+                    # Check if Base64 already has data: prefix to avoid double prefix
+                    if not schema_img_base64.startswith('data:'):
+                        schema_img_base64 = f"data:image/png;base64,{schema_img_base64}"
                     logger.info(
                         "Schema Base64 generated during exercise creation",
                         module_name="generation",
