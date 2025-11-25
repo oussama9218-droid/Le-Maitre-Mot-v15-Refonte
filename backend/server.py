@@ -1331,20 +1331,32 @@ Exemple CORRECT: points: ["A","B","C","D"] avec labels: {"A":"(0,3)", "B":"(0,0)
 **ÉNONCÉ DE L'EXERCICE :**
 "{enonce}"
 
-Tu dois analyser cet énoncé et générer un schéma géométrique dans le format JSON EXACT suivant :
+Tu dois analyser cet énoncé et générer un schéma géométrique qui CORRESPOND EXACTEMENT à l'énoncé.
 
+**RÈGLES CRITIQUES :**
+1. UTILISE LES MÊMES NOMS DE POINTS que dans l'énoncé (si l'énoncé dit "triangle DEF", utilise D, E, F)
+2. RESPECTE LES DIMENSIONS mentionnées dans l'énoncé
+3. RESPECTE LES PROPRIÉTÉS géométriques (angle droit, etc.)
+
+**FORMAT JSON EXACT :**
 ```json
 {{
     "schema": {{
-        "type": "triangle",
-        "points": ["A", "B", "C"],
-        "segments": [["A", "B", {{"longueur": 5}}], ["B", "C", {{"longueur": 3}}]],
-        "angles": [["B", {{"angle_droit": true}}]]
+        "type": "triangle_rectangle",
+        "points": ["D", "E", "F"],
+        "segments": [["D", "E", {{"longueur": "5 cm"}}], ["E", "F", {{"longueur": "12 cm"}}]],
+        "angles": [["E", {{"angle_droit": true}}]]
     }}
 }}
 ```
 
-**RÈGLES IMPÉRATIVES :**
+**ÉTAPES À SUIVRE :**
+1. IDENTIFIER les noms des points dans l'énoncé (ex: triangle ABC → utilise A, B, C)
+2. IDENTIFIER les dimensions mentionnées (ex: AB = 5 cm → segment AB longueur 5)
+3. IDENTIFIER les propriétés (ex: rectangle en B → angle droit en B)
+4. GÉNÉRER le JSON avec CES DONNÉES EXACTES
+
+**RÈGLES TECHNIQUES :**
 1. TOUJOURS utiliser la clé "schema" (sans accent, sans underscore)
 2. TOUJOURS fermer toutes les accolades et crochets
 3. TOUJOURS utiliser des virgules correctes
