@@ -1,5 +1,6 @@
 """
 Geometry Renderer - Generate geometric figures as SVG from structured data
+Version améliorée avec rendu SVG de qualité MathALÉA
 """
 
 import json
@@ -12,6 +13,9 @@ from io import StringIO, BytesIO
 import base64
 import logging
 from typing import Dict, Any, List, Tuple, Optional
+
+# Import du nouveau système SVG
+from geometry_svg_renderer import geometry_svg_renderer
 
 logger = logging.getLogger(__name__)
 
