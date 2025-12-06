@@ -70,6 +70,7 @@ class MathGenerationService:
             "Fractions": [MathExerciseType.CALCUL_FRACTIONS],
             "Proportionnalité": [MathExerciseType.PROPORTIONNALITE],
             "Périmètres et aires": [MathExerciseType.PERIMETRE_AIRE, MathExerciseType.RECTANGLE],
+            "Géométrie - Triangles et quadrilatères": [MathExerciseType.RECTANGLE, MathExerciseType.PERIMETRE_AIRE],
             
             # 5e  
             "Triangles": [MathExerciseType.TRIANGLE_QUELCONQUE, MathExerciseType.TRIANGLE_RECTANGLE],
@@ -79,6 +80,7 @@ class MathGenerationService:
             # 4e
             "Théorème de Pythagore": [MathExerciseType.TRIANGLE_RECTANGLE],
             "Équations": [MathExerciseType.EQUATION_1ER_DEGRE],
+            "Calcul littéral": [MathExerciseType.EQUATION_1ER_DEGRE],
             "Puissances": [MathExerciseType.PUISSANCES],
             
             # 3e
