@@ -722,6 +722,10 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+agent_communication:
+    - agent: "testing"
+    - message: "Starting comprehensive testing of SVG geometric figures display system. Will test the three main math topics: Théorème de Pythagore (4e), Trigonométrie (3e), and Théorème de Thalès (3e). Focus on verifying SVG rendering, display quality, and integration with frontend."
+
 frontend:
   - task: "Wizard Navigation and Flow"
     implemented: true
