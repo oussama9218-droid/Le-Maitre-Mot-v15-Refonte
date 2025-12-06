@@ -90,10 +90,14 @@ class MathGenerationService:
             "Théorème de Pythagore": [MathExerciseType.TRIANGLE_RECTANGLE],
             "Équations": [MathExerciseType.EQUATION_1ER_DEGRE],
             
-            # 3e
+            # 3e et géométrie avancée
             "Probabilités": [MathExerciseType.PROBABILITES],
             "Statistiques et probabilités": [MathExerciseType.STATISTIQUES, MathExerciseType.PROBABILITES],
-            "Aires et volumes": [MathExerciseType.VOLUME, MathExerciseType.PERIMETRE_AIRE]
+            "Aires et volumes": [MathExerciseType.VOLUME, MathExerciseType.PERIMETRE_AIRE],
+            "Théorème de Thalès": [MathExerciseType.THALES],
+            "Trigonométrie": [MathExerciseType.TRIGONOMETRIE],
+            "Le cercle": [MathExerciseType.CERCLE],
+            "Cercle": [MathExerciseType.CERCLE]
         }
         
         return mapping.get(chapitre, [MathExerciseType.CALCUL_DECIMAUX])
