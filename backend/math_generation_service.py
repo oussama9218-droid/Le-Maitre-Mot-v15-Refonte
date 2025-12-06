@@ -71,21 +71,31 @@ class MathGenerationService:
             "Proportionnalité": [MathExerciseType.PROPORTIONNALITE],
             "Périmètres et aires": [MathExerciseType.PERIMETRE_AIRE, MathExerciseType.RECTANGLE],
             "Géométrie - Triangles et quadrilatères": [MathExerciseType.RECTANGLE, MathExerciseType.PERIMETRE_AIRE],
+            "Géométrie dans l'espace": [MathExerciseType.VOLUME],
+            "Volumes": [MathExerciseType.VOLUME],
             
             # 5e  
             "Triangles": [MathExerciseType.TRIANGLE_QUELCONQUE, MathExerciseType.TRIANGLE_RECTANGLE],
             "Nombres relatifs": [MathExerciseType.CALCUL_RELATIFS],
             "Statistiques": [MathExerciseType.STATISTIQUES],
+            "Calcul littéral": [MathExerciseType.CALCUL_DECIMAUX],
             
             # 4e
             "Théorème de Pythagore": [MathExerciseType.TRIANGLE_RECTANGLE],
             "Équations": [MathExerciseType.EQUATION_1ER_DEGRE],
             "Calcul littéral": [MathExerciseType.EQUATION_1ER_DEGRE],
             "Puissances": [MathExerciseType.PUISSANCES],
+            "Nombres relatifs": [MathExerciseType.CALCUL_RELATIFS],
+            "Fractions": [MathExerciseType.CALCUL_FRACTIONS],
+            "Statistiques": [MathExerciseType.STATISTIQUES],
+            "Géométrie dans l'espace": [MathExerciseType.VOLUME],
             
             # 3e
             "Probabilités": [MathExerciseType.PROBABILITES],
-            "Volumes": [MathExerciseType.VOLUME]
+            "Volumes": [MathExerciseType.VOLUME],
+            "Statistiques": [MathExerciseType.STATISTIQUES],
+            "Puissances": [MathExerciseType.PUISSANCES],
+            "Calcul littéral": [MathExerciseType.EQUATION_1ER_DEGRE]
         }
         
         return mapping.get(chapitre, [MathExerciseType.CALCUL_DECIMAUX])
