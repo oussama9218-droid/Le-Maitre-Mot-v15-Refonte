@@ -212,12 +212,12 @@ class GeometrySVGRenderer:
             }).text = label
     
     def render_rectangle(self, data: Dict[str, Any]) -> str:
-        """Rendu d'un rectangle de qualité MathALÉA"""
+        """Rendu d'un rectangle de qualité MathALÉA - Optimisé pour mobile"""
         svg = self.create_svg_root()
         
-        # Paramètres
-        longueur = data.get('longueur', 120)
-        largeur = data.get('largeur', 80)
+        # Paramètres mathématiques
+        longueur_math = data.get('longueur', 120)  # En cm
+        largeur_math = data.get('largeur', 80)     # En cm
         points_input = data.get('points', ['P', 'Q', 'R', 'S'])
         
         # S'assurer qu'on a 4 points
@@ -226,32 +226,106 @@ class GeometrySVGRenderer:
         else:
             points = points_input
         
+        # Dimensions graphiques : occuper 70% de l'espace disponible
+        margin = 50  # Marge pour les labels
+        available_width = self.width - 2 * margin
+        available_height = self.height - 2 * margin
+        
+        # Calculer le ratio pour garder les proportions
+        ratio = min(available_width / longueur_math, available_height / largeur_math)
+        
+        # Dimensions graphiques du rectangle
+        rect_width = longueur_math * ratio * 0.7   # 70% de l'espace
+        rect_height = largeur_math * ratio * 0.7
+        
         # Centrer le rectangle
-        start_x = (self.width - longueur) / 2
-        start_y = (self.height - largeur) / 2
+        start_x = (self.width - rect_width) / 2
+        start_y = (self.height - rect_height) / 2
         
         # Points du rectangle (sens trigonométrique)
-        A = Point(start_x, start_y + largeur, points[0])
-        B = Point(start_x, start_y, points[1])
-        C = Point(start_x + longueur, start_y, points[2])
-        D = Point(start_x + longueur, start_y + largeur, points[3])
+        # P (bas-gauche), Q (haut-gauche), R (haut-droite), S (bas-droite)
+        P = Point(start_x, start_y + rect_height, points[0])
+        Q = Point(start_x, start_y, points[1])
+        R = Point(start_x + rect_width, start_y, points[2])
+        S = Point(start_x + rect_width, start_y + rect_height, points[3])
         
-        # Lignes du rectangle
+        # Lignes du rectangle avec trait plus épais
         lines = [
-            Line(A, B), Line(B, C), Line(C, D), Line(D, A)
+            Line(P, Q, width=2.0),
+            Line(Q, R, width=2.0),
+            Line(R, S, width=2.0),
+            Line(S, P, width=2.0)
         ]
         
         # Dessiner les lignes
         for line in lines:
             self.add_line(svg, line)
         
-        # Ajouter les points
-        for point in [A, B, C, D]:
-            self.add_point(svg, point)
+        # Ajouter les points avec labels SOUS/AU-DESSUS des sommets
+        # P (bas-gauche) - label en bas
+        self.add_point(svg, P)
+        text_p = ET.SubElement(svg, 'text', {
+            'x': str(P.x),
+            'y': str(P.y + 18),
+            'text-anchor': 'middle',
+            'class': 'geometry-text'
+        })
+        text_p.text = P.label
         
-        # Ajouter les cotes
-        self.add_dimension_label(svg, Line(B, C), f"{longueur} cm", -20)
-        self.add_dimension_label(svg, Line(A, B), f"{largeur} cm", -20)
+        # Q (haut-gauche) - label en haut
+        self.add_point(svg, Q)
+        text_q = ET.SubElement(svg, 'text', {
+            'x': str(Q.x),
+            'y': str(Q.y - 8),
+            'text-anchor': 'middle',
+            'class': 'geometry-text'
+        })
+        text_q.text = Q.label
+        
+        # R (haut-droite) - label en haut
+        self.add_point(svg, R)
+        text_r = ET.SubElement(svg, 'text', {
+            'x': str(R.x),
+            'y': str(R.y - 8),
+            'text-anchor': 'middle',
+            'class': 'geometry-text'
+        })
+        text_r.text = R.label
+        
+        # S (bas-droite) - label en bas
+        self.add_point(svg, S)
+        text_s = ET.SubElement(svg, 'text', {
+            'x': str(S.x),
+            'y': str(S.y + 18),
+            'text-anchor': 'middle',
+            'class': 'geometry-text'
+        })
+        text_s.text = S.label
+        
+        # Ajouter les cotes (longueurs) au milieu des côtés
+        # Longueur en haut (côté QR)
+        mid_top = Q.midpoint_to(R)
+        text_longueur = ET.SubElement(svg, 'text', {
+            'x': str(mid_top.x),
+            'y': str(mid_top.y - 15),
+            'text-anchor': 'middle',
+            'font-size': '15',
+            'font-weight': 'bold',
+            'class': 'geometry-text'
+        })
+        text_longueur.text = f"{longueur_math} cm"
+        
+        # Largeur à gauche (côté PQ)
+        mid_left = P.midpoint_to(Q)
+        text_largeur = ET.SubElement(svg, 'text', {
+            'x': str(mid_left.x - 30),
+            'y': str(mid_left.y + 5),
+            'text-anchor': 'middle',
+            'font-size': '15',
+            'font-weight': 'bold',
+            'class': 'geometry-text'
+        })
+        text_largeur.text = f"{largeur_math} cm"
         
         return ET.tostring(svg, encoding='unicode')
     
