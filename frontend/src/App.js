@@ -350,6 +350,7 @@ function MainApp() {
   const fetchCatalog = async () => {
     try {
       const response = await axios.get(`${API}/catalog`);
+      console.log('📚 Catalog received:', response.data.catalog?.length, 'matières');
       setCatalog(response.data.catalog);
       
       // Store catalog stats if available
