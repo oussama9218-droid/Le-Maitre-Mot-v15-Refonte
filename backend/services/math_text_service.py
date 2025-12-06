@@ -460,12 +460,15 @@ Résultat : {spec.resultat_final}"""
                 enonce = f"Un cercle a un périmètre de {params['perimetre']} cm. Calculer son rayon."
             else:
                 return self._fallback_generic(spec)
-        
-        return MathTextGeneration(
-            enonce=enonce,
-            explication_prof="Exercice sur les cercles",
-            solution_redigee=f"Résultat = {spec.resultat_final}"
-        )
+            
+            return MathTextGeneration(
+                enonce=enonce,
+                explication_prof="Exercice sur les cercles",
+                solution_redigee=f"Résultat = {spec.resultat_final}"
+            )
+        except Exception as e:
+            logger.warning(f"Fallback cercle échoué, utilisation fallback generic: {e}")
+            return self._fallback_generic(spec)
     
     def _fallback_thales(self, spec: MathExerciseSpec) -> MathTextGeneration:
         """Template fallback pour théorème de Thalès"""
