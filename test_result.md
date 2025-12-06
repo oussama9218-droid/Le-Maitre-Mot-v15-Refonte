@@ -721,10 +721,6 @@ test_plan:
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
-    - "Endpoint roadmap - Page publique transparence"
-  stuck_tasks: []
-  test_all: false
-  test_priority: "high_first"
 
 frontend:
   - task: "Wizard Navigation and Flow"
