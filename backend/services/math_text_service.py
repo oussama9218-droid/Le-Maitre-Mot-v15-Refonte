@@ -322,18 +322,26 @@ Résultat : {spec.resultat_final}"""
             return self._fallback_generic(spec)
     
     def _fallback_equation(self, spec: MathExerciseSpec) -> MathTextGeneration:
-        """Template fallback pour équations"""
+        """Template fallback pour équations - Robuste"""
         
-        equation = spec.parametres["equation"]
-        
-        enonce = f"Résoudre l'équation : {equation}"
-        solution = f"Solution : {spec.resultat_final}"
-        
-        return MathTextGeneration(
-            enonce=enonce,
-            explication_prof="Équation du premier degré",
-            solution_redigee=solution
-        )
+        try:
+            equation = spec.parametres.get("equation", None)
+            
+            if equation:
+                enonce = f"Résoudre l'équation : {equation}"
+            else:
+                return self._fallback_generic(spec)
+            
+            solution = f"Solution : {spec.resultat_final}"
+            
+            return MathTextGeneration(
+                enonce=enonce,
+                explication_prof="Équation du premier degré",
+                solution_redigee=solution
+            )
+        except Exception as e:
+            logger.warning(f"Fallback equation échoué, utilisation fallback generic: {e}")
+            return self._fallback_generic(spec)
     
     def _fallback_generic(self, spec: MathExerciseSpec) -> MathTextGeneration:
         """Template fallback générique"""
