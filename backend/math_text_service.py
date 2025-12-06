@@ -339,7 +339,7 @@ Résultat : {spec.resultat_final}"""
         elif solide == "cylindre":
             enonce = f"Calculer le volume d'un cylindre de rayon {params['rayon']} cm et de hauteur {params['hauteur']} cm."
         else:
-            enonce = f"Calculer le volume du solide donné."
+            enonce = "Calculer le volume du solide donné."
         
         return MathTextGeneration(
             enonce=enonce,
