@@ -10,6 +10,7 @@ from typing import List, Optional
 from models.math_models import MathExerciseSpec, MathTextGeneration, GeneratedMathExercise
 from utils import get_emergent_key
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from services.text_normalizer import normalizer
 
 logger = logging.getLogger(__name__)
 
