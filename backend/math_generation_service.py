@@ -1165,7 +1165,10 @@ class MathGenerationService:
     def _gen_thales(self, niveau: str, chapitre: str, difficulte: str) -> MathExerciseSpec:
         """Génère un exercice sur le théorème de Thalès"""
         
-        points = self._get_next_geometry_points()[:5]  # A, B, C, D, E
+        # Obtenir 2 sets de points (3+3 = 6 points, on en utilisera 5)
+        points_set1 = self._get_next_geometry_points()  # A, B, C
+        points_set2 = self._get_next_geometry_points()  # D, E, F (on prendra D, E)
+        points = points_set1 + points_set2[:2]  # A, B, C, D, E
         
         # Configuration : triangle ABC avec droite (DE) parallèle à (BC)
         # D sur [AB], E sur [AC]
