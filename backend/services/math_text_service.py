@@ -446,16 +446,20 @@ Résultat : {spec.resultat_final}"""
 
     
     def _fallback_cercle(self, spec: MathExerciseSpec) -> MathTextGeneration:
-        """Template fallback pour cercles"""
-        params = spec.parametres
-        type_calcul = params["type"]
+        """Template fallback pour cercles - Robuste"""
         
-        if type_calcul == "perimetre":
-            enonce = f"Calculer le périmètre d'un cercle de rayon {params['rayon']} cm."
-        elif type_calcul == "aire":
-            enonce = f"Calculer l'aire d'un cercle de rayon {params['rayon']} cm."
-        else:
-            enonce = f"Un cercle a un périmètre de {params['perimetre']} cm. Calculer son rayon."
+        try:
+            params = spec.parametres
+            type_calcul = params.get("type", "")
+            
+            if type_calcul == "perimetre" and "rayon" in params:
+                enonce = f"Calculer le périmètre d'un cercle de rayon {params['rayon']} cm."
+            elif type_calcul == "aire" and "rayon" in params:
+                enonce = f"Calculer l'aire d'un cercle de rayon {params['rayon']} cm."
+            elif type_calcul == "rayon_depuis_perimetre" and "perimetre" in params:
+                enonce = f"Un cercle a un périmètre de {params['perimetre']} cm. Calculer son rayon."
+            else:
+                return self._fallback_generic(spec)
         
         return MathTextGeneration(
             enonce=enonce,
