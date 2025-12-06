@@ -136,71 +136,82 @@ class MathGenerationService:
     def _gen_triangle_rectangle(
         self, niveau: str, chapitre: str, difficulte: str
     ) -> MathExerciseSpec:
-        """Génère un exercice de triangle rectangle (Pythagore)"""
+        """Génère un exercice de triangle rectangle (Pythagore)
+        
+        RÈGLE CRITIQUE : Toutes les longueurs dans l'énoncé (longueurs_connues) 
+        doivent être des entiers ou décimaux simples, JAMAIS des valeurs irrationnelles.
+        """
         
         points = self._get_next_geometry_points()
+        angle_droit = points[1]  # Point de l'angle droit (milieu par défaut)
         
-        # Générer des longueurs cohérentes
+        # Triplets pythagoriciens exacts pour garantir des valeurs entières
+        triplets_faciles = [
+            (3, 4, 5), (5, 12, 13), (6, 8, 10), (7, 24, 25), 
+            (8, 15, 17), (9, 12, 15), (9, 40, 41), (12, 16, 20)
+        ]
+        
+        triplets_difficiles = [
+            (11, 60, 61), (13, 84, 85), (20, 21, 29), (28, 45, 53),
+            (33, 56, 65), (36, 77, 85), (5, 12, 13), (8, 15, 17)
+        ]
+        
+        # Choisir un triplet selon la difficulté
         if difficulte == "facile":
-            # Triplets pythagoriciens classiques
-            triplets = [(3, 4, 5), (5, 12, 13), (8, 15, 17), (7, 24, 25)]
-            a, b, c = random.choice(triplets)
+            a, b, c = random.choice(triplets_faciles)
         else:
-            # Nombres plus complexes
-            a = random.randint(6, 15)
-            b = random.randint(8, 20) 
-            c = math.sqrt(a*a + b*b)
+            a, b, c = random.choice(triplets_difficiles)
         
-        # Choisir quel côté calculer
-        angle_droit = points[1]  # B par défaut
+        # Décider quel côté calculer
+        calcul_type = random.choice(["hypotenuse", "cote"])
         
-        if random.choice([True, False]):
-            # Donner les deux côtés de l'angle droit, calculer l'hypoténuse
+        if calcul_type == "hypotenuse":
+            # CAS 1 : Calculer l'hypoténuse
+            # Donner les deux côtés de l'angle droit (a et b)
+            # L'élève doit calculer l'hypoténuse (c)
             longueurs_connues = {
-                f"{points[0]}{points[1]}": a,
-                f"{points[1]}{points[2]}": b
+                f"{points[0]}{points[1]}": a,  # Premier côté
+                f"{points[1]}{points[2]}": b   # Deuxième côté
             }
-            longueur_a_calculer = f"{points[0]}{points[2]}"
+            longueur_a_calculer = f"{points[0]}{points[2]}"  # Hypoténuse
             resultat = c
+            
+            etapes = [
+                f"Le triangle {points[0]}{points[1]}{points[2]} est rectangle en {angle_droit}",
+                "D'après le théorème de Pythagore :",
+                f"{longueur_a_calculer}² = {points[0]}{points[1]}² + {points[1]}{points[2]}²",
+                f"{longueur_a_calculer}² = {a}² + {b}² = {a*a} + {b*b} = {a*a + b*b}",
+                f"{longueur_a_calculer} = √{a*a + b*b} = {c} cm"
+            ]
+            
         else:
-            # Donner hypoténuse et un côté, calculer l'autre
+            # CAS 2 : Calculer un côté de l'angle droit
+            # Donner l'hypoténuse (c) et un côté (a)
+            # L'élève doit calculer l'autre côté (b)
             longueurs_connues = {
-                f"{points[0]}{points[1]}": a,
-                f"{points[0]}{points[2]}": c
+                f"{points[0]}{points[1]}": a,      # Côté connu
+                f"{points[0]}{points[2]}": c       # Hypoténuse
             }
-            longueur_a_calculer = f"{points[1]}{points[2]}"
+            longueur_a_calculer = f"{points[1]}{points[2]}"  # Côté à calculer
             resultat = b
+            
+            etapes = [
+                f"Le triangle {points[0]}{points[1]}{points[2]} est rectangle en {angle_droit}",
+                "D'après le théorème de Pythagore :",
+                f"{points[0]}{points[2]}² = {points[0]}{points[1]}² + {longueur_a_calculer}²",
+                f"{c}² = {a}² + {longueur_a_calculer}²",
+                f"{longueur_a_calculer}² = {c}² - {a}² = {c*c} - {a*a} = {c*c - a*a}",
+                f"{longueur_a_calculer} = √{c*c - a*a} = {b} cm"
+            ]
         
-        # Créer la figure géométrique
+        # Créer la figure géométrique avec UNIQUEMENT des valeurs entières
         figure = GeometricFigure(
             type="triangle_rectangle",
             points=points,
             rectangle_en=angle_droit,
-            longueurs_connues=longueurs_connues,
+            longueurs_connues=longueurs_connues,  # ✅ Uniquement des entiers
             longueurs_a_calculer=[longueur_a_calculer]
         )
-        
-        # Calculer la solution
-        etapes = [
-            f"Le triangle {points[0]}{points[1]}{points[2]} est rectangle en {angle_droit}",
-            "D'après le théorème de Pythagore :",
-        ]
-        
-        if longueur_a_calculer == f"{points[0]}{points[2]}":
-            # Calculer hypoténuse
-            etapes.extend([
-                f"{longueur_a_calculer}² = {points[0]}{points[1]}² + {points[1]}{points[2]}²",
-                f"{longueur_a_calculer}² = {a}² + {b}² = {a*a} + {b*b} = {a*a + b*b}",
-                f"{longueur_a_calculer} = √{a*a + b*b} = {resultat:.1f} cm"
-            ])
-        else:
-            # Calculer côté de l'angle droit
-            etapes.extend([
-                f"{points[0]}{points[2]}² = {points[0]}{points[1]}² + {longueur_a_calculer}²",
-                f"{c*c:.0f} = {a}² + {longueur_a_calculer}²",
-                f"{longueur_a_calculer}² = {c*c:.0f} - {a*a} = {c*c - a*a:.0f}",
-                f"{longueur_a_calculer} = √{c*c - a*a:.0f} = {resultat:.1f} cm"
-            ])
         
         return MathExerciseSpec(
             niveau=niveau,
@@ -211,15 +222,17 @@ class MathGenerationService:
                 "triangle": f"{points[0]}{points[1]}{points[2]}",
                 "angle_droit": angle_droit,
                 "longueurs_donnees": longueurs_connues,
-                "longueur_a_calculer": longueur_a_calculer
+                "longueur_a_calculer": longueur_a_calculer,
+                "triplet_utilise": f"({a}, {b}, {c})"
             },
             solution_calculee={
                 "longueur_calculee": resultat,
                 "unite": "cm",
-                "methode": "pythagore"
+                "methode": "pythagore",
+                "triplet": f"({a}, {b}, {c})"
             },
             etapes_calculees=etapes,
-            resultat_final=f"{resultat:.1f} cm",
+            resultat_final=f"{resultat} cm",  # ✅ Entier, pas de décimale
             figure_geometrique=figure,
             points_bareme=[
                 {"etape": "Identification théorème de Pythagore", "points": 1.0},
