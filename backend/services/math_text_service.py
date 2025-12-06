@@ -492,21 +492,28 @@ Résultat : {spec.resultat_final}"""
             return self._fallback_generic(spec)
     
     def _fallback_trigonometrie(self, spec: MathExerciseSpec) -> MathTextGeneration:
-        """Template fallback pour trigonométrie"""
-        params = spec.parametres
-        angle = params["angle"]
-        type_calcul = params["type_calcul"]
+        """Template fallback pour trigonométrie - Robuste"""
         
-        if type_calcul == "cote_oppose":
-            enonce = f"Dans un triangle rectangle, calculer le côté opposé à un angle de {angle}°."
-        elif type_calcul == "cote_adjacent":
-            enonce = f"Dans un triangle rectangle, calculer le côté adjacent à un angle de {angle}°."
-        else:
-            enonce = f"Dans un triangle rectangle, calculer l'hypoténuse sachant l'angle de {angle}°."
-        
-        return MathTextGeneration(
-            enonce=enonce,
-            explication_prof="Exercice de trigonométrie",
-            solution_redigee=f"Résultat = {spec.resultat_final}"
-        )
+        try:
+            params = spec.parametres
+            angle = params.get("angle", 30)
+            type_calcul = params.get("type_calcul", "")
+            
+            if type_calcul == "cote_oppose":
+                enonce = f"Dans un triangle rectangle, calculer le côté opposé à un angle de {angle}°."
+            elif type_calcul == "cote_adjacent":
+                enonce = f"Dans un triangle rectangle, calculer le côté adjacent à un angle de {angle}°."
+            elif type_calcul == "hypotenuse":
+                enonce = f"Dans un triangle rectangle, calculer l'hypoténuse sachant l'angle de {angle}°."
+            else:
+                return self._fallback_generic(spec)
+            
+            return MathTextGeneration(
+                enonce=enonce,
+                explication_prof="Exercice de trigonométrie",
+                solution_redigee=f"Résultat = {spec.resultat_final}"
+            )
+        except Exception as e:
+            logger.warning(f"Fallback trigonometrie échoué, utilisation fallback generic: {e}")
+            return self._fallback_generic(spec)
 
