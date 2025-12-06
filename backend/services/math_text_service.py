@@ -356,24 +356,29 @@ Résultat : {spec.resultat_final}"""
 
     
     def _fallback_volume(self, spec: MathExerciseSpec) -> MathTextGeneration:
-        """Template fallback pour volumes"""
-        params = spec.parametres
-        solide = params["solide"]
+        """Template fallback pour volumes - Robuste"""
         
-        if solide == "cube":
-            enonce = f"Calculer le volume d'un cube d'arête {params['arete']} cm."
-        elif solide == "pave":
-            enonce = f"Calculer le volume d'un pavé droit de dimensions {params['longueur']} cm × {params['largeur']} cm × {params['hauteur']} cm."
-        elif solide == "cylindre":
-            enonce = f"Calculer le volume d'un cylindre de rayon {params['rayon']} cm et de hauteur {params['hauteur']} cm."
-        else:
-            enonce = "Calculer le volume du solide donné."
-        
-        return MathTextGeneration(
-            enonce=enonce,
-            explication_prof="Exercice de calcul de volume",
-            solution_redigee=f"Volume = {spec.resultat_final}"
-        )
+        try:
+            params = spec.parametres
+            solide = params.get("solide", "")
+            
+            if solide == "cube" and "arete" in params:
+                enonce = f"Calculer le volume d'un cube d'arête {params['arete']} cm."
+            elif solide == "pave" and all(k in params for k in ['longueur', 'largeur', 'hauteur']):
+                enonce = f"Calculer le volume d'un pavé droit de dimensions {params['longueur']} cm × {params['largeur']} cm × {params['hauteur']} cm."
+            elif solide == "cylindre" and all(k in params for k in ['rayon', 'hauteur']):
+                enonce = f"Calculer le volume d'un cylindre de rayon {params['rayon']} cm et de hauteur {params['hauteur']} cm."
+            else:
+                enonce = f"Calculer le volume du solide. Résultat : {spec.resultat_final}"
+            
+            return MathTextGeneration(
+                enonce=enonce,
+                explication_prof="Exercice de calcul de volume",
+                solution_redigee=f"Volume = {spec.resultat_final}"
+            )
+        except Exception as e:
+            logger.warning(f"Fallback volume échoué, utilisation fallback generic: {e}")
+            return self._fallback_generic(spec)
     
     def _fallback_statistiques(self, spec: MathExerciseSpec) -> MathTextGeneration:
         """Template fallback pour statistiques"""
