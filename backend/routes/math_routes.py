@@ -83,14 +83,17 @@ async def generate_math_exercises_new_architecture(
         for gen_ex in generated_exercises:
             exercise_dict = gen_ex.to_exercise_dict()
             
-            # Enrichir avec geometric_schema SVG si nécessaire
-            # TODO: Implémenter le rendu SVG si nécessaire
-            # if gen_ex.spec.figure_geometrique:
-            #     try:
-            #         svg_data = render_svg_schema(gen_ex.spec.figure_geometrique)
-            #         exercise_dict["geometric_schema_svg"] = svg_data
-            #     except Exception as e:
-            #         logger.warning(f"SVG rendering failed: {e}")
+            # Enrichir avec le SVG de la figure géométrique
+            if gen_ex.spec.figure_geometrique:
+                try:
+                    svg_data = geometry_render_service.render_figure_to_svg(
+                        gen_ex.spec.figure_geometrique
+                    )
+                    if svg_data:
+                        exercise_dict["figure_svg"] = svg_data
+                        logger.info(f"✅ SVG généré pour {gen_ex.spec.figure_geometrique.type}")
+                except Exception as e:
+                    logger.warning(f"⚠️ Échec rendu SVG: {e}")
             
             exercises.append(exercise_dict)
         
