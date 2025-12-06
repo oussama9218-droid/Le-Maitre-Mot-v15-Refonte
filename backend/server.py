@@ -457,6 +457,8 @@ class Exercise(BaseModel):
     geometric_schema: Optional[dict] = None  # Geometric schema data separate from text
     # CRITICAL: Base64 schema image for frontend display
     schema_img: Optional[str] = None  # Base64 PNG image for web display
+    # NEW: SVG figure for geometry rendering
+    figure_svg: Optional[str] = None  # SVG string for geometric figures
     # NEW: Geographic document for Geography exercises
     document: Optional[dict] = None  # Educational document metadata for Geography
     # NEW: Mathematical specification for new architecture
