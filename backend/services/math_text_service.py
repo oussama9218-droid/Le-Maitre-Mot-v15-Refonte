@@ -358,14 +358,25 @@ Résultat : {spec.resultat_final}"""
             return self._fallback_generic(spec)
     
     def _fallback_generic(self, spec: MathExerciseSpec) -> MathTextGeneration:
-        """Template fallback générique"""
+        """Template fallback générique - DERNIER RECOURS"""
         
-        enonce = f"Exercice de {spec.chapitre.lower()} - niveau {spec.niveau}"
+        logger.warning(f"⚠️  FALLBACK GÉNÉRIQUE utilisé pour {spec.type_exercice} (chapitre: {spec.chapitre})")
+        logger.warning(f"   Cela indique qu'aucun fallback spécifique n'a fonctionné")
+        
+        # Construire un énoncé plus détaillé à partir des étapes calculées
+        etapes_str = " → ".join(spec.etapes_calculees[:2]) if spec.etapes_calculees else ""
+        
+        if etapes_str:
+            enonce = f"Exercice : {etapes_str}. Calculer le résultat final."
+        else:
+            enonce = f"Exercice de {spec.chapitre.lower()} - niveau {spec.niveau}. Résoudre le problème."
+        
+        solution = f"Réponse : {spec.resultat_final}"
         
         return MathTextGeneration(
             enonce=enonce,
-            explication_prof=f"Exercice de type {spec.type_exercice}",
-            solution_redigee=f"Résultat : {spec.resultat_final}"
+            explication_prof=f"Exercice niveau {spec.niveau}",
+            solution_redigee=solution
         )
 
     
