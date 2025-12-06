@@ -97,7 +97,7 @@ class TestSVGGeneration:
         print(f"✅ Thalès: {len(svg)} caractères, 5 points présents")
     
     def test_cercle_svg(self):
-        """Test SVG pour cercles"""
+        """Test SVG pour cercles - Vérifie le rendu optimisé mobile"""
         # Test avec le chapitre "Aires" qui génère des cercles
         specs = self.math_service.generate_math_exercise_specs(
             niveau="6e",
@@ -118,9 +118,18 @@ class TestSVGGeneration:
         svg = geometry_render_service.render_figure_to_svg(cercle_spec.figure_geometrique)
         assert svg is not None
         assert len(svg) > 0
-        assert '<circle' in svg, "Pas de cercle SVG"
         
-        print(f"✅ Cercle: {len(svg)} caractères")
+        # Vérifications structure cercle
+        assert '<circle' in svg, "Pas de cercle SVG"
+        assert svg.count('<circle') >= 2, "Devrait avoir au moins 2 cercles (figure + point central)"
+        assert '<text' in svg, "Pas de labels texte"
+        assert 'r =' in svg, "Label du rayon manquant"
+        
+        # Vérifier que le rayon est bien affiché
+        rayon_math = cercle_spec.figure_geometrique.longueurs_connues.get('rayon', 0)
+        assert f"r = {rayon_math} cm" in svg, f"Label 'r = {rayon_math} cm' manquant"
+        
+        print(f"✅ Cercle: {len(svg)} caractères, rayon {rayon_math} cm bien affiché")
     
     def test_rectangle_svg(self):
         """Test SVG pour rectangles"""
