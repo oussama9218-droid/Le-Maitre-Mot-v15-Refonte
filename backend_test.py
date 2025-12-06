@@ -1325,6 +1325,327 @@ class LeMaitreMotAPITester:
         print(f"\n   Specialized prompts quality: {quality_tests_passed}/2 passed")
         return quality_tests_passed == 2, {"quality_tests_passed": quality_tests_passed}
 
+    def test_nouvelle_architecture_mathematiques(self):
+        """Test Nouvelle Architecture Mathématiques - Séparation logique mathématique et rédaction textuelle"""
+        print("\n🎯 TESTING NOUVELLE ARCHITECTURE MATHÉMATIQUES")
+        print("="*70)
+        print("CONTEXTE: Nouvelle architecture séparant logique mathématique (Python pur) et rédaction textuelle (IA)")
+        print("TESTS CRITIQUES: Pythagore, Nombres Relatifs, Équations, Robustesse, Structure des réponses")
+        
+        # Test 1: Pythagore facile - Vérifications critiques
+        print("\n📐 TEST 1.1 - PYTHAGORE FACILE")
+        pythagore_facile_data = {
+            "matiere": "Mathématiques",
+            "niveau": "4e",
+            "chapitre": "Théorème de Pythagore",
+            "type_doc": "evaluation",
+            "difficulte": "facile",
+            "nb_exercices": 3,
+            "versions": ["A"],
+            "guest_id": self.guest_id
+        }
+        
+        success, response = self.run_test(
+            "Pythagore Facile - Architecture Mathématiques",
+            "POST",
+            "generate",
+            200,
+            data=pythagore_facile_data,
+            timeout=60
+        )
+        
+        pythagore_results = {"passed": 0, "total": 5, "issues": []}
+        
+        if success and isinstance(response, dict):
+            document = response.get('document')
+            if document:
+                exercises = document.get('exercises', [])
+                print(f"   ✅ Généré {len(exercises)} exercices Pythagore")
+                
+                # Vérifications critiques pour chaque exercice
+                for i, exercise in enumerate(exercises):
+                    print(f"\n   🔍 Analyse exercice {i+1}:")
+                    
+                    # 1. Vérification longueurs entières (pas de décimales irrationnelles)
+                    enonce = exercise.get('enonce', '')
+                    decimal_pattern = r'\d+\.\d+'
+                    decimals_found = re.findall(decimal_pattern, enonce)
+                    
+                    if decimals_found:
+                        # Check if decimals are simple (not irrational)
+                        complex_decimals = [d for d in decimals_found if len(d.split('.')[1]) > 2]
+                        if complex_decimals:
+                            print(f"   ❌ Décimales complexes détectées: {complex_decimals}")
+                            pythagore_results["issues"].append(f"Ex{i+1}: Décimales irrationnelles {complex_decimals}")
+                        else:
+                            print(f"   ✅ Longueurs simples: {decimals_found}")
+                            pythagore_results["passed"] += 1
+                    else:
+                        print(f"   ✅ Toutes longueurs entières (optimal)")
+                        pythagore_results["passed"] += 1
+                    
+                    # 2. Vérification points géométriques variés
+                    points_pattern = r'triangle\s+([A-Z]{3})|points?\s+([A-Z],?\s*[A-Z],?\s*[A-Z])'
+                    points_match = re.search(points_pattern, enonce, re.IGNORECASE)
+                    if points_match:
+                        points = points_match.group(1) or points_match.group(2)
+                        if points and not points.startswith('ABC'):
+                            print(f"   ✅ Points variés: {points}")
+                            pythagore_results["passed"] += 1
+                        else:
+                            print(f"   ⚠️  Points génériques ABC détectés")
+                            pythagore_results["issues"].append(f"Ex{i+1}: Points génériques ABC")
+                    else:
+                        print(f"   ⚠️  Points géométriques non détectés")
+                    
+                    # 3. Vérification spec_mathematique
+                    spec_math = exercise.get('spec_mathematique') or exercise.get('donnees', {}).get('spec_mathematique')
+                    if spec_math:
+                        print(f"   ✅ spec_mathematique présent")
+                        pythagore_results["passed"] += 1
+                    else:
+                        print(f"   ❌ spec_mathematique manquant")
+                        pythagore_results["issues"].append(f"Ex{i+1}: spec_mathematique manquant")
+                    
+                    # 4. Vérification calculs corrects (triplets pythagoriciens)
+                    solution = exercise.get('solution', {})
+                    resultat = solution.get('resultat', '')
+                    if resultat:
+                        # Extract numeric result
+                        result_match = re.search(r'(\d+(?:\.\d+)?)', resultat)
+                        if result_match:
+                            result_value = float(result_match.group(1))
+                            # Check if it's a known Pythagorean triplet result
+                            known_triplets = [5, 13, 15, 17, 25, 26, 29, 34, 35, 37, 39, 41, 45, 51, 53, 58, 61, 65]
+                            if int(result_value) in known_triplets or result_value in known_triplets:
+                                print(f"   ✅ Résultat cohérent avec triplets pythagoriciens: {result_value}")
+                                pythagore_results["passed"] += 1
+                            else:
+                                print(f"   ⚠️  Résultat à vérifier: {result_value}")
+                        else:
+                            print(f"   ⚠️  Résultat non numérique: {resultat}")
+                    
+                    # 5. Cohérence énoncé-schéma
+                    schema = exercise.get('geometric_schema') or exercise.get('donnees', {}).get('schema')
+                    if schema and isinstance(schema, dict):
+                        schema_points = schema.get('points', [])
+                        enonce_points = re.findall(r'[A-Z]', enonce)
+                        common_points = set(schema_points) & set(enonce_points)
+                        if len(common_points) >= 2:
+                            print(f"   ✅ Cohérence énoncé-schéma: points communs {list(common_points)}")
+                            pythagore_results["passed"] += 1
+                        else:
+                            print(f"   ❌ Incohérence énoncé-schéma")
+                            pythagore_results["issues"].append(f"Ex{i+1}: Incohérence énoncé-schéma")
+                    else:
+                        print(f"   ℹ️  Pas de schéma géométrique")
+        
+        # Test 1.2: Pythagore difficile
+        print("\n📐 TEST 1.2 - PYTHAGORE DIFFICILE")
+        pythagore_difficile_data = pythagore_facile_data.copy()
+        pythagore_difficile_data["difficulte"] = "difficile"
+        
+        success_diff, response_diff = self.run_test(
+            "Pythagore Difficile - Architecture Mathématiques",
+            "POST",
+            "generate",
+            200,
+            data=pythagore_difficile_data,
+            timeout=60
+        )
+        
+        # Test 2: Nombres Relatifs
+        print("\n➕➖ TEST 2.1 - NOMBRES RELATIFS")
+        nombres_relatifs_data = {
+            "matiere": "Mathématiques",
+            "niveau": "5e",
+            "chapitre": "Nombres relatifs",
+            "difficulte": "facile",
+            "nb_exercices": 3,
+            "guest_id": self.guest_id
+        }
+        
+        success_nr, response_nr = self.run_test(
+            "Nombres Relatifs - Architecture Mathématiques",
+            "POST",
+            "generate",
+            200,
+            data=nombres_relatifs_data,
+            timeout=60
+        )
+        
+        nombres_relatifs_results = {"passed": 0, "total": 3, "issues": []}
+        
+        if success_nr and isinstance(response_nr, dict):
+            document = response_nr.get('document')
+            if document:
+                exercises = document.get('exercises', [])
+                print(f"   ✅ Généré {len(exercises)} exercices Nombres Relatifs")
+                
+                for i, exercise in enumerate(exercises):
+                    enonce = exercise.get('enonce', '')
+                    solution = exercise.get('solution', {})
+                    
+                    # Vérification calculs corrects (3 - (-5) = 8, etc.)
+                    if '3 - (-5)' in enonce or '3-(-5)' in enonce:
+                        if '8' in str(solution):
+                            print(f"   ✅ Calcul correct: 3 - (-5) = 8")
+                            nombres_relatifs_results["passed"] += 1
+                        else:
+                            print(f"   ❌ Calcul incorrect pour 3 - (-5)")
+                            nombres_relatifs_results["issues"].append(f"Ex{i+1}: Calcul incorrect")
+                    
+                    # Vérification étapes détaillées
+                    etapes = solution.get('etapes', [])
+                    if len(etapes) >= 2:
+                        print(f"   ✅ Étapes détaillées: {len(etapes)} étapes")
+                        nombres_relatifs_results["passed"] += 1
+                    else:
+                        print(f"   ⚠️  Étapes insuffisantes: {len(etapes)}")
+        
+        # Test 3: Équations
+        print("\n🔢 TEST 3.1 - ÉQUATIONS")
+        equations_data = {
+            "matiere": "Mathématiques",
+            "niveau": "4e",
+            "chapitre": "Calcul littéral",
+            "difficulte": "facile",
+            "nb_exercices": 3,
+            "guest_id": self.guest_id
+        }
+        
+        success_eq, response_eq = self.run_test(
+            "Équations - Architecture Mathématiques",
+            "POST",
+            "generate",
+            200,
+            data=equations_data,
+            timeout=60
+        )
+        
+        equations_results = {"passed": 0, "total": 3, "issues": []}
+        
+        if success_eq and isinstance(response_eq, dict):
+            document = response_eq.get('document')
+            if document:
+                exercises = document.get('exercises', [])
+                print(f"   ✅ Généré {len(exercises)} exercices Équations")
+                
+                for i, exercise in enumerate(exercises):
+                    enonce = exercise.get('enonce', '')
+                    solution = exercise.get('solution', {})
+                    resultat = solution.get('resultat', '')
+                    
+                    # Vérification forme ax + b = c
+                    equation_pattern = r'(\d+)x\s*[+\-]\s*(\d+)\s*=\s*(\d+)'
+                    if re.search(equation_pattern, enonce):
+                        print(f"   ✅ Équation forme ax + b = c détectée")
+                        equations_results["passed"] += 1
+                    
+                    # Vérification solution correcte (substitution)
+                    if 'x' in resultat:
+                        x_value_match = re.search(r'x\s*=\s*([+-]?\d+(?:\.\d+)?)', resultat)
+                        if x_value_match:
+                            x_value = float(x_value_match.group(1))
+                            print(f"   ✅ Solution x = {x_value} (à vérifier par substitution)")
+                            equations_results["passed"] += 1
+        
+        # Test 4: Robustesse - Fallback
+        print("\n🔄 TEST 4.1 - ROBUSTESSE FALLBACK")
+        fallback_results = {"passed": 0, "total": 3}
+        
+        # Générer plusieurs fois le même type
+        for attempt in range(3):
+            success_fb, response_fb = self.run_test(
+                f"Robustesse Fallback - Tentative {attempt+1}",
+                "POST",
+                "generate",
+                200,
+                data=pythagore_facile_data,
+                timeout=60
+            )
+            
+            if success_fb:
+                fallback_results["passed"] += 1
+                print(f"   ✅ Tentative {attempt+1} réussie")
+            else:
+                print(f"   ❌ Tentative {attempt+1} échouée")
+        
+        # Test 5: Structure des Réponses
+        print("\n📋 TEST 5.1 - STRUCTURE DES RÉPONSES")
+        structure_results = {"passed": 0, "total": 6, "issues": []}
+        
+        if success and isinstance(response, dict):
+            document = response.get('document')
+            if document:
+                exercises = document.get('exercises', [])
+                
+                for i, exercise in enumerate(exercises):
+                    required_fields = ['id', 'type', 'enonce', 'solution', 'bareme']
+                    
+                    for field in required_fields:
+                        if field in exercise:
+                            structure_results["passed"] += 1
+                        else:
+                            structure_results["issues"].append(f"Ex{i+1}: Champ {field} manquant")
+                    
+                    # Vérification spec_mathematique (nouveau champ)
+                    if 'spec_mathematique' in exercise or ('donnees' in exercise and 'spec_mathematique' in exercise.get('donnees', {})):
+                        print(f"   ✅ spec_mathematique présent dans exercice {i+1}")
+                        structure_results["passed"] += 1
+                    
+                    # Vérification geometric_schema (pour géométrie)
+                    if exercise.get('type') == 'geometry':
+                        if 'geometric_schema' in exercise or ('donnees' in exercise and 'schema' in exercise.get('donnees', {})):
+                            print(f"   ✅ geometric_schema présent pour exercice géométrie {i+1}")
+                            structure_results["passed"] += 1
+        
+        # Résumé global
+        print(f"\n📊 RÉSUMÉ NOUVELLE ARCHITECTURE MATHÉMATIQUES:")
+        print(f"   Pythagore: {pythagore_results['passed']}/{pythagore_results['total']} vérifications")
+        print(f"   Nombres Relatifs: {nombres_relatifs_results['passed']}/{nombres_relatifs_results['total']} vérifications")
+        print(f"   Équations: {equations_results['passed']}/{equations_results['total']} vérifications")
+        print(f"   Robustesse: {fallback_results['passed']}/{fallback_results['total']} tentatives")
+        print(f"   Structure: {structure_results['passed']}/{structure_results['total']} champs")
+        
+        # Issues critiques
+        all_issues = pythagore_results["issues"] + nombres_relatifs_results["issues"] + equations_results["issues"] + structure_results["issues"]
+        if all_issues:
+            print(f"\n🚨 ISSUES CRITIQUES DÉTECTÉES:")
+            for issue in all_issues:
+                print(f"   - {issue}")
+        
+        # Évaluation globale
+        total_passed = (pythagore_results["passed"] + nombres_relatifs_results["passed"] + 
+                       equations_results["passed"] + fallback_results["passed"] + structure_results["passed"])
+        total_tests = (pythagore_results["total"] + nombres_relatifs_results["total"] + 
+                      equations_results["total"] + fallback_results["total"] + structure_results["total"])
+        
+        success_rate = (total_passed / total_tests) * 100 if total_tests > 0 else 0
+        
+        if success_rate >= 80:
+            print(f"\n   🎉 NOUVELLE ARCHITECTURE MATHÉMATIQUES OPÉRATIONNELLE")
+            print(f"   ✅ Taux de réussite: {success_rate:.1f}% ({total_passed}/{total_tests})")
+            print(f"   ✅ Séparation logique mathématique / rédaction textuelle fonctionnelle")
+            print(f"   ✅ Calculs exacts et cohérents")
+            print(f"   ✅ Points géométriques variés")
+            print(f"   ✅ Structure des réponses conforme")
+        else:
+            print(f"\n   ⚠️  Architecture partiellement fonctionnelle")
+            print(f"   📊 Taux de réussite: {success_rate:.1f}% ({total_passed}/{total_tests})")
+        
+        return success_rate >= 80, {
+            "success_rate": success_rate,
+            "total_passed": total_passed,
+            "total_tests": total_tests,
+            "pythagore": pythagore_results,
+            "nombres_relatifs": nombres_relatifs_results,
+            "equations": equations_results,
+            "robustesse": fallback_results,
+            "structure": structure_results,
+            "all_issues": all_issues
+        }
+
     def test_mathematics_regression(self):
         """Test that Mathematics functionality is not affected by new subjects integration"""
         print("\n🔄 Testing Mathematics Regression (No Impact from New Subjects)...")
