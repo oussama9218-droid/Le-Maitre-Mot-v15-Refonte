@@ -411,38 +411,79 @@ class GeometrySVGRenderer:
         return ET.tostring(svg, encoding='unicode')
     
     def render_cercle(self, data: Dict[str, Any]) -> str:
-        """Rendu d'un cercle de qualité MathALÉA"""
+        """Rendu d'un cercle de qualité MathALÉA - Optimisé pour mobile"""
         svg = self.create_svg_root()
         
         # Paramètres
-        rayon = data.get('rayon', 60)
+        rayon_mathematique = data.get('rayon', 60)  # Rayon mathématique (cm)
         centre = data.get('centre', 'O')
         
         # Centre du cercle
         center_x, center_y = self.width/2, self.height/2
         O = Point(center_x, center_y, centre)
         
-        # Cercle
+        # Rayon graphique : occupe 60-70% de la zone disponible
+        max_radius = min(self.width, self.height) * 0.35  # 70% du diamètre = 35% du rayon
+        rayon_graphique = max_radius
+        
+        # Cercle avec rayon graphique agrandi
         ET.SubElement(svg, 'circle', {
             'cx': str(center_x),
             'cy': str(center_y), 
-            'r': str(rayon),
+            'r': str(rayon_graphique),
             'fill': 'none',
             'stroke': self.style_config['line_color'],
-            'stroke-width': str(self.style_config['line_width']),
+            'stroke-width': '2',  # Ligne plus épaisse pour mobile
             'class': 'geometry-line'
         })
         
-        # Point central
-        self.add_point(svg, O)
+        # Point central (plus gros pour mobile)
+        circle = ET.SubElement(svg, 'circle', {
+            'cx': str(O.x),
+            'cy': str(O.y),
+            'r': '4',  # Point plus gros
+            'class': 'geometry-point'
+        })
         
-        # Rayon (ligne depuis le centre)
-        rayon_end = Point(center_x + rayon, center_y)
-        rayon_line = Line(O, rayon_end, style="dashed")
-        self.add_line(svg, rayon_line)
+        # Label du centre (au-dessus du point)
+        text = ET.SubElement(svg, 'text', {
+            'x': str(O.x),
+            'y': str(O.y - 10),
+            'text-anchor': 'middle',
+            'class': 'geometry-text'
+        })
+        text.text = O.label
         
-        # Label du rayon
-        self.add_dimension_label(svg, rayon_line, f"r = {rayon} cm", 15)
+        # Rayon (ligne depuis le centre vers la droite)
+        rayon_end = Point(center_x + rayon_graphique, center_y)
+        rayon_line = Line(O, rayon_end)
+        
+        # Ligne du rayon en pointillés
+        line_elem = ET.SubElement(svg, 'line', {
+            'x1': str(O.x),
+            'y1': str(O.y),
+            'x2': str(rayon_end.x),
+            'y2': str(rayon_end.y),
+            'stroke': self.style_config['line_color'],
+            'stroke-width': '1.5',
+            'stroke-dasharray': '5,5',
+            'class': 'geometry-line'
+        })
+        
+        # Point à l'extrémité du rayon
+        self.add_point(svg, rayon_end)
+        
+        # Label du rayon SOUS le cercle (bien espacé)
+        label_y = center_y + rayon_graphique + 30  # 30px sous le cercle
+        text_label = ET.SubElement(svg, 'text', {
+            'x': str(center_x),
+            'y': str(label_y),
+            'text-anchor': 'middle',
+            'font-size': '16',  # Police plus grande
+            'font-weight': 'bold',
+            'class': 'geometry-text'
+        })
+        text_label.text = f"r = {rayon_mathematique} cm"
         
         return ET.tostring(svg, encoding='unicode')
     
