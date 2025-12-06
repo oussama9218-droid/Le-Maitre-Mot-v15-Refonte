@@ -1062,5 +1062,3 @@ class MathGenerationService:
                 etapes_calculees=etapes,
                 resultat_final=resultat
             )
-
-        )
