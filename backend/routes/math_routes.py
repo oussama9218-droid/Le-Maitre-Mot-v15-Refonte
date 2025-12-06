@@ -18,7 +18,7 @@ from services.math_generation_service import MathGenerationService
 from services.math_text_service import MathTextService
 
 # Import depuis geometry renderer
-from geometry_svg_renderer import render_svg_schema
+# from geometry_svg_renderer import render_svg_schema  # TODO: À implémenter si nécessaire
 
 # Logger
 logger = logging.getLogger(__name__)
