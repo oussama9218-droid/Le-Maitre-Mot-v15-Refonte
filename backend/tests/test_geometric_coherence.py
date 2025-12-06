@@ -393,7 +393,8 @@ class TestGeometricCoherence:
                         valeurs_figure,
                         valeurs_enonce,
                         valeurs_solution,
-                        f"{nom_test}-{exercices_testes}"
+                        f"{nom_test}-{exercices_testes}",
+                        spec=spec
                     )
                     erreurs.extend(erreurs_valeurs)
                 
