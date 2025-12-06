@@ -531,24 +531,95 @@ Résultat : {spec.resultat_final}"""
             return self._fallback_generic(spec)
     
     def _fallback_thales(self, spec: MathExerciseSpec) -> MathTextGeneration:
-        """Template fallback pour théorème de Thalès - Robuste"""
+        """Template fallback pour théorème de Thalès - COHÉRENT ET COMPLET"""
         
         try:
             params = spec.parametres
             points = params.get("points", [])
             
-            if len(points) >= 5:
-                enonce = f"Dans le triangle {points[0]}{points[1]}{points[2]}, ({points[3]}{points[4]}) // ({points[1]}{points[2]}). Appliquer le théorème de Thalès."
-            else:
+            if len(points) < 5:
+                logger.warning("Fallback Thalès: pas assez de points")
                 return self._fallback_generic(spec)
+            
+            # Points : [0]=A (sommet), [1]=B, [2]=C (base), [3]=D (sur AB), [4]=E (sur AC)
+            # Configuration : Triangle ABC, D sur [AB], E sur [AC], (DE) // (BC)
+            A, B, C, D, E = points[0], points[1], points[2], points[3], points[4]
+            
+            # Récupérer les longueurs depuis figure_geometrique si disponible
+            longueurs = {}
+            if spec.figure_geometrique:
+                longueurs = spec.figure_geometrique.longueurs_connues
+            
+            # Construire l'énoncé avec les longueurs connues
+            donnees = []
+            segments_disponibles = [
+                f"{A}{D}", f"{D}{B}", f"{A}{E}", f"{E}{C}",
+                f"{D}{E}", f"{B}{C}"
+            ]
+            
+            for seg in segments_disponibles:
+                if seg in longueurs:
+                    donnees.append(f"{seg} = {longueurs[seg]} cm")
+            
+            # Si pas de longueurs, utiliser les paramètres
+            if not donnees and "longueurs_connues" in params:
+                for seg, val in params["longueurs_connues"].items():
+                    donnees.append(f"{seg} = {val} cm")
+            
+            # Construire l'énoncé structuré
+            enonce_parts = [
+                f"Soit un triangle {A}{B}{C}.",
+                f"Le point {D} est situé sur le segment [{A}{B}].",
+                f"Le point {E} est situé sur le segment [{A}{C}].",
+                f"Les droites ({D}{E}) et ({B}{C}) sont parallèles."
+            ]
+            
+            if donnees:
+                enonce_parts.append(f"On sait que : {', '.join(donnees)}.")
+            
+            # Trouver ce qui est demandé
+            a_calculer = params.get("a_calculer", None)
+            if not a_calculer and spec.figure_geometrique:
+                a_calculer_list = spec.figure_geometrique.longueurs_a_calculer
+                if a_calculer_list:
+                    a_calculer = a_calculer_list[0]
+            
+            if a_calculer:
+                enonce_parts.append(f"Calculer la longueur {a_calculer}.")
+            else:
+                enonce_parts.append(f"En déduire le rapport de Thalès.")
+            
+            enonce = " ".join(enonce_parts)
+            
+            # Solution structurée
+            solution_parts = [
+                f"Configuration de Thalès dans le triangle {A}{B}{C}.",
+                f"Les points {D}, {A}, {B} sont alignés (dans cet ordre).",
+                f"Les points {E}, {A}, {C} sont alignés (dans cet ordre).",
+                f"Les droites ({D}{E}) et ({B}{C}) sont parallèles.",
+                "",
+                "D'après le théorème de Thalès :",
+                f"{A}{D}/{A}{B} = {A}{E}/{A}{C} = {D}{E}/{B}{C}",
+                "",
+            ]
+            
+            if donnees:
+                solution_parts.append("Application numérique :")
+                solution_parts.extend(donnees)
+                solution_parts.append("")
+            
+            solution_parts.append(f"Résultat final : {spec.resultat_final}")
+            
+            solution = "\n".join(solution_parts)
             
             return MathTextGeneration(
                 enonce=enonce,
-                explication_prof="Exercice sur le théorème de Thalès",
-                solution_redigee=f"Rapport = {spec.resultat_final}"
+                explication_prof=f"Configuration de Thalès : triangle {A}{B}{C} avec ({D}{E}) // ({B}{C})",
+                solution_redigee=solution
             )
         except Exception as e:
-            logger.warning(f"Fallback thales échoué, utilisation fallback generic: {e}")
+            logger.warning(f"Fallback Thalès échoué, utilisation fallback generic: {e}")
+            logger.exception(e)
             return self._fallback_generic(spec)
     
     def _fallback_trigonometrie(self, spec: MathExerciseSpec) -> MathTextGeneration:
