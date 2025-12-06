@@ -7,7 +7,7 @@ import json
 import asyncio
 import logging
 from typing import List, Optional
-from math_models import MathExerciseSpec, MathTextGeneration, GeneratedMathExercise
+from models.math_models import MathExerciseSpec, MathTextGeneration, GeneratedMathExercise
 from utils import get_emergent_key
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
