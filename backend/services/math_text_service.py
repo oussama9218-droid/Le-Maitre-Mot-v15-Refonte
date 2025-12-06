@@ -665,4 +665,165 @@ Résultat : {spec.resultat_final}"""
         except Exception as e:
             logger.warning(f"Fallback trigonometrie échoué, utilisation fallback generic: {e}")
             return self._fallback_generic(spec)
+    
+    def _fallback_triangle_quelconque(self, spec: MathExerciseSpec) -> MathTextGeneration:
+        """Template fallback pour triangles quelconques - Robuste"""
+        
+        try:
+            figure = spec.figure_geometrique
+            
+            if not figure or not figure.points or len(figure.points) < 3:
+                return self._fallback_generic(spec)
+            
+            triangle_name = "".join(figure.points)
+            
+            # Récupérer les angles connus de la figure
+            angles_connus = figure.angles_connus if hasattr(figure, 'angles_connus') and figure.angles_connus else {}
+            
+            if not angles_connus:
+                return self._fallback_generic(spec)
+            
+            # Construire l'énoncé avec les angles
+            angles_str = []
+            for angle_name, valeur in angles_connus.items():
+                # angle_name est de la forme "DEF" (angle en E)
+                if len(angle_name) >= 3:
+                    sommet = angle_name[1] if len(angle_name) == 3 else angle_name[0]
+                    angles_str.append(f"l'angle en {sommet} mesure {valeur}°")
+            
+            if not angles_str:
+                return self._fallback_generic(spec)
+            
+            enonce = f"""Dans le triangle {triangle_name}, {" et ".join(angles_str)}. """ + \
+                    f"""Calculer la mesure du troisième angle."""
+            
+            solution = f"""La somme des angles d'un triangle est toujours égale à 180°.
+Résultat : {spec.resultat_final}"""
+            
+            return MathTextGeneration(
+                enonce=enonce,
+                explication_prof="Exercice sur la somme des angles d'un triangle",
+                solution_redigee=solution
+            )
+        except Exception as e:
+            logger.warning(f"Fallback triangle_quelconque échoué, utilisation fallback generic: {e}")
+            return self._fallback_generic(spec)
+    
+    def _fallback_perimetre_aire(self, spec: MathExerciseSpec) -> MathTextGeneration:
+        """Template fallback pour périmètres et aires - Robuste"""
+        
+        try:
+            figure = spec.figure_geometrique
+            params = spec.parametres
+            
+            if not figure:
+                return self._fallback_generic(spec)
+            
+            figure_type = params.get("figure", figure.type)
+            
+            # Cas du rectangle
+            if figure_type == "rectangle" or figure.type == "rectangle":
+                longueur = params.get("longueur", None)
+                largeur = params.get("largeur", None)
+                
+                # Si pas dans params, chercher dans longueurs_connues
+                if not longueur or not largeur:
+                    longueurs = figure.longueurs_connues if figure.longueurs_connues else {}
+                    valeurs = list(longueurs.values())
+                    if len(valeurs) >= 2:
+                        longueur = valeurs[0]
+                        largeur = valeurs[1]
+                
+                if longueur and largeur:
+                    enonce = f"Un rectangle a pour dimensions {longueur} cm et {largeur} cm. " + \
+                            f"Calculer son périmètre et son aire."
+                    
+                    return MathTextGeneration(
+                        enonce=enonce,
+                        explication_prof="Exercice sur périmètre et aire d'un rectangle",
+                        solution_redigee=f"Résultat : {spec.resultat_final}"
+                    )
+            
+            # Cas du carré
+            elif figure_type == "carre":
+                cote = params.get("cote", None)
+                
+                if not cote and figure.longueurs_connues:
+                    valeurs = list(figure.longueurs_connues.values())
+                    if valeurs:
+                        cote = valeurs[0]
+                
+                if cote:
+                    enonce = f"Un carré a pour côté {cote} cm. " + \
+                            f"Calculer son périmètre et son aire."
+                    
+                    return MathTextGeneration(
+                        enonce=enonce,
+                        explication_prof="Exercice sur périmètre et aire d'un carré",
+                        solution_redigee=f"Résultat : {spec.resultat_final}"
+                    )
+            
+            # Cas du cercle
+            elif figure_type == "cercle" or figure.type == "cercle":
+                rayon = params.get("rayon", None)
+                
+                if not rayon and figure.longueurs_connues:
+                    rayon = figure.longueurs_connues.get("rayon", None)
+                
+                if rayon:
+                    enonce = f"Un cercle a pour rayon {rayon} cm. " + \
+                            f"Calculer son périmètre et son aire."
+                    
+                    return MathTextGeneration(
+                        enonce=enonce,
+                        explication_prof="Exercice sur périmètre et aire d'un cercle",
+                        solution_redigee=f"Résultat : {spec.resultat_final}"
+                    )
+            
+            return self._fallback_generic(spec)
+            
+        except Exception as e:
+            logger.warning(f"Fallback perimetre_aire échoué, utilisation fallback generic: {e}")
+            return self._fallback_generic(spec)
+    
+    def _fallback_rectangle(self, spec: MathExerciseSpec) -> MathTextGeneration:
+        """Template fallback pour rectangles - Robuste"""
+        
+        try:
+            figure = spec.figure_geometrique
+            params = spec.parametres
+            
+            if not figure or not figure.points or len(figure.points) < 4:
+                return self._fallback_generic(spec)
+            
+            rectangle_name = "".join(figure.points)
+            longueur = params.get("longueur", None)
+            largeur = params.get("largeur", None)
+            
+            # Si pas dans params, chercher dans longueurs_connues
+            if not longueur or not largeur:
+                longueurs = figure.longueurs_connues if figure.longueurs_connues else {}
+                valeurs = list(longueurs.values())
+                if len(valeurs) >= 2:
+                    longueur = valeurs[0]
+                    largeur = valeurs[1]
+            
+            if not longueur or not largeur:
+                return self._fallback_generic(spec)
+            
+            enonce = f"Le rectangle {rectangle_name} a pour dimensions : longueur = {longueur} cm et largeur = {largeur} cm. " + \
+                    f"Calculer son périmètre et son aire."
+            
+            solution = f"""Périmètre = 2 × (longueur + largeur) = 2 × ({longueur} + {largeur})
+Aire = longueur × largeur = {longueur} × {largeur}
+Résultat : {spec.resultat_final}"""
+            
+            return MathTextGeneration(
+                enonce=enonce,
+                explication_prof="Exercice sur périmètre et aire d'un rectangle",
+                solution_redigee=solution
+            )
+        except Exception as e:
+            logger.warning(f"Fallback rectangle échoué, utilisation fallback generic: {e}")
+            return self._fallback_generic(spec)
 
