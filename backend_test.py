@@ -1462,8 +1462,10 @@ class LeMaitreMotAPITester:
             "matiere": "Mathématiques",
             "niveau": "5e",
             "chapitre": "Nombres relatifs",
+            "type_doc": "exercices",
             "difficulte": "facile",
             "nb_exercices": 3,
+            "versions": ["A"],
             "guest_id": self.guest_id
         }
         
