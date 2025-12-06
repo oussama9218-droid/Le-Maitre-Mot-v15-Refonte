@@ -8,7 +8,7 @@ import math
 from fractions import Fraction
 from typing import List, Dict, Any, Tuple
 import logging
-from math_models import (
+from models.math_models import (
     MathExerciseSpec, MathExerciseType, DifficultyLevel, 
     GeometricFigure
 )
