@@ -1257,11 +1257,16 @@ class MathGenerationService:
         BC = random.randint(10, 20)
         DE = round(BC / (k + 1), 2)
         
+        # Configuration : points[0]=A (sommet), points[1]=B, points[2]=C (base)
+        # points[3]=D (sur AB), points[4]=E (sur AC)
+        # Parallèle : (DE) // (BC)
+        A, B, C, D, E = points[0], points[1], points[2], points[3], points[4]
+        
         etapes = [
-            f"Triangle {points[0]}{points[1]}{points[2]} avec (DE) // (BC)",
-            f"{points[3]} sur [{points[0]}{points[1]}], {points[4]} sur [{points[0]}{points[2]}]",
+            f"Triangle {A}{B}{C} avec ({D}{E}) // ({B}{C})",
+            f"{D} sur [{A}{B}], {E} sur [{A}{C}]",
             "D'après le théorème de Thalès :",
-            f"{points[0]}{points[3]}/{points[0]}{points[1]} = {points[0]}{points[4]}/{points[0]}{points[2]} = {points[3]}{points[4]}/{points[1]}{points[2]}",
+            f"{A}{D}/{A}{B} = {A}{E}/{A}{C} = {D}{E}/{B}{C}",
             f"{AD}/{AB} = {AE}/{AC}",
             f"Rapport = {AD}/{AB} = {AD}/{AD + DB} ≈ {round(AD/AB, 2)}"
         ]
