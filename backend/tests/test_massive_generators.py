@@ -80,7 +80,7 @@ def test_generator(service, generator_func, niveau, chapitre, nb_tests=50):
     
     for i in range(nb_tests):
         try:
-            spec = generator_func(service, niveau, chapitre, "facile")
+            spec = generator_func(niveau, chapitre, "facile")
             
             # Vérification 1: Spec existe
             if spec is None:
