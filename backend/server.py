@@ -21,9 +21,10 @@ from jinja2 import Template
 from latex_to_svg import latex_renderer
 from geometry_renderer import geometry_renderer
 from render_schema import schema_renderer
-# Nouveaux imports pour l'architecture mathématique structurée
-from math_generation_service import MathGenerationService
-from math_text_service import MathTextService
+# Nouveaux imports pour l'architecture mathématique structurée (réorganisés)
+from services.math_generation_service import MathGenerationService
+from services.math_text_service import MathTextService
+from routes.math_routes import generate_math_exercises_new_architecture
 import requests
 import latex2mathml.converter
 from logger import get_logger, log_execution_time, log_ai_generation, log_schema_processing, log_user_context, log_quota_check
