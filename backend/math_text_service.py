@@ -388,3 +388,55 @@ Résultat : {spec.resultat_final}"""
             explication_prof="Exercice sur les puissances",
             solution_redigee=f"Résultat = {spec.resultat_final}"
         )
+
+    
+    def _fallback_cercle(self, spec: MathExerciseSpec) -> MathTextGeneration:
+        """Template fallback pour cercles"""
+        params = spec.parametres
+        type_calcul = params["type"]
+        
+        if type_calcul == "perimetre":
+            enonce = f"Calculer le périmètre d'un cercle de rayon {params['rayon']} cm."
+        elif type_calcul == "aire":
+            enonce = f"Calculer l'aire d'un cercle de rayon {params['rayon']} cm."
+        else:
+            enonce = f"Un cercle a un périmètre de {params['perimetre']} cm. Calculer son rayon."
+        
+        return MathTextGeneration(
+            enonce=enonce,
+            explication_prof="Exercice sur les cercles",
+            solution_redigee=f"Résultat = {spec.resultat_final}"
+        )
+    
+    def _fallback_thales(self, spec: MathExerciseSpec) -> MathTextGeneration:
+        """Template fallback pour théorème de Thalès"""
+        params = spec.parametres
+        points = params["points"]
+        
+        enonce = f"Dans le triangle {points[0]}{points[1]}{points[2]}, ({points[3]}{points[4]}) // ({points[1]}{points[2]}). Appliquer le théorème de Thalès."
+        
+        return MathTextGeneration(
+            enonce=enonce,
+            explication_prof="Exercice sur le théorème de Thalès",
+            solution_redigee=f"Rapport = {spec.resultat_final}"
+        )
+    
+    def _fallback_trigonometrie(self, spec: MathExerciseSpec) -> MathTextGeneration:
+        """Template fallback pour trigonométrie"""
+        params = spec.parametres
+        angle = params["angle"]
+        type_calcul = params["type_calcul"]
+        
+        if type_calcul == "cote_oppose":
+            enonce = f"Dans un triangle rectangle, calculer le côté opposé à un angle de {angle}°."
+        elif type_calcul == "cote_adjacent":
+            enonce = f"Dans un triangle rectangle, calculer le côté adjacent à un angle de {angle}°."
+        else:
+            enonce = f"Dans un triangle rectangle, calculer l'hypoténuse sachant l'angle de {angle}°."
+        
+        return MathTextGeneration(
+            enonce=enonce,
+            explication_prof="Exercice de trigonométrie",
+            solution_redigee=f"Résultat = {spec.resultat_final}"
+        )
+
