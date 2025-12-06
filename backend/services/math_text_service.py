@@ -361,7 +361,7 @@ Résultat : {spec.resultat_final}"""
         """Template fallback générique - DERNIER RECOURS"""
         
         logger.warning(f"⚠️  FALLBACK GÉNÉRIQUE utilisé pour {spec.type_exercice} (chapitre: {spec.chapitre})")
-        logger.warning(f"   Cela indique qu'aucun fallback spécifique n'a fonctionné")
+        logger.warning("   Cela indique qu'aucun fallback spécifique n'a fonctionné")
         
         # Construire un énoncé plus détaillé à partir des étapes calculées
         etapes_str = " → ".join(spec.etapes_calculees[:2]) if spec.etapes_calculees else ""
