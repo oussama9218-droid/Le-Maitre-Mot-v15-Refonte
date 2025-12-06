@@ -284,6 +284,21 @@ Tu réponds UNIQUEMENT en JSON avec les champs : "enonce", "explication_prof", "
                 if len(points_manquants) > 1:  # Tolérer 1 point manquant
                     logger.warning(f"❌ Validation THALÈS: Points manquants: {points_manquants}")
                     return False
+                
+                # VALIDATION CRITIQUE : Vérifier le parallélisme dans la solution
+                # Chercher des patterns de parallélisme : (AB) // (CD)
+                parallel_pattern = r'\(([A-Z])([A-Z])\)\s*//\s*\(([A-Z])([A-Z])\)'
+                parallel_matches = re.findall(parallel_pattern, text.solution_redigee or "")
+                
+                for match in parallel_matches:
+                    # match = (A, B, C, D) pour "(AB) // (CD)"
+                    points_in_parallel = set(match)
+                    points_non_autorises = points_in_parallel - points_autorises
+                    
+                    if points_non_autorises:
+                        logger.warning(f"❌ Validation THALÈS SOLUTION: Parallélisme avec points NON AUTORISÉS: {points_non_autorises}")
+                        logger.warning(f"   Parallélisme détecté: ({match[0]}{match[1]}) // ({match[2]}{match[3]})")
+                        return False
         
         return True
     
