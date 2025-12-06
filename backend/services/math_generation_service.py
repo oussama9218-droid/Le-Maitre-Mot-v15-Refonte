@@ -600,6 +600,18 @@ class MathGenerationService:
             perimetre = 2 * (longueur + largeur)
             aire = longueur * largeur
             
+            # Créer la figure géométrique du rectangle
+            points = self._get_next_geometry_points()[:4]  # 4 points pour rectangle
+            figure = GeometricFigure(
+                type="rectangle",
+                points=points,
+                longueurs_connues={
+                    f"{points[0]}{points[1]}": largeur,
+                    f"{points[1]}{points[2]}": longueur
+                },
+                proprietes=["rectangle"]
+            )
+            
             return MathExerciseSpec(
                 niveau=niveau,
                 chapitre=chapitre,
@@ -619,7 +631,8 @@ class MathGenerationService:
                     f"Périmètre = 2 × ({longueur} + {largeur}) = {perimetre} cm",
                     f"Aire = {longueur} × {largeur} = {aire} cm²"
                 ],
-                resultat_final=f"Périmètre = {perimetre} cm, Aire = {aire} cm²"
+                resultat_final=f"Périmètre = {perimetre} cm, Aire = {aire} cm²",
+                figure_geometrique=figure
             )
         
         elif figure_type == "carre":
