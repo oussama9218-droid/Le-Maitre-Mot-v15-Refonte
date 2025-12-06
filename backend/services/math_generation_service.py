@@ -679,6 +679,13 @@ class MathGenerationService:
             perimetre = round(2 * math.pi * rayon, 2)
             aire = round(math.pi * rayon * rayon, 2)
             
+            # Créer la figure géométrique du cercle
+            figure = GeometricFigure(
+                type="cercle",
+                points=["O"],
+                longueurs_connues={"rayon": rayon}
+            )
+            
             return MathExerciseSpec(
                 niveau=niveau,
                 chapitre=chapitre,
@@ -697,7 +704,8 @@ class MathGenerationService:
                     f"Périmètre = 2 × π × {rayon} ≈ {perimetre} cm",
                     f"Aire = π × {rayon}² ≈ {aire} cm²"
                 ],
-                resultat_final=f"Périmètre ≈ {perimetre} cm, Aire ≈ {aire} cm²"
+                resultat_final=f"Périmètre ≈ {perimetre} cm, Aire ≈ {aire} cm²",
+                figure_geometrique=figure
             )
     
     def _gen_rectangle(self, niveau: str, chapitre: str, difficulte: str) -> MathExerciseSpec:
