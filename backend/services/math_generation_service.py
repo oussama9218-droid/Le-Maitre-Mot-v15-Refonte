@@ -1164,6 +1164,13 @@ class MathGenerationService:
                 f"rayon ≈ {rayon} cm"
             ]
             
+            # Créer la figure géométrique
+            figure = GeometricFigure(
+                type="cercle",
+                points=["O"],
+                longueurs_connues={"rayon": rayon}
+            )
+            
             return MathExerciseSpec(
                 niveau=niveau,
                 chapitre=chapitre,
@@ -1178,7 +1185,8 @@ class MathGenerationService:
                     "unite": "cm"
                 },
                 etapes_calculees=etapes,
-                resultat_final=f"{rayon} cm"
+                resultat_final=f"{rayon} cm",
+                figure_geometrique=figure
             )
     
     def _gen_thales(self, niveau: str, chapitre: str, difficulte: str) -> MathExerciseSpec:
