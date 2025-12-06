@@ -108,7 +108,11 @@ class MathGenerationService:
             MathExerciseType.TRIANGLE_QUELCONQUE: self._gen_triangle_quelconque,
             MathExerciseType.PROPORTIONNALITE: self._gen_proportionnalite,
             MathExerciseType.PERIMETRE_AIRE: self._gen_perimetre_aire,
-            MathExerciseType.RECTANGLE: self._gen_rectangle
+            MathExerciseType.RECTANGLE: self._gen_rectangle,
+            MathExerciseType.VOLUME: self._gen_volume,
+            MathExerciseType.STATISTIQUES: self._gen_statistiques,
+            MathExerciseType.PROBABILITES: self._gen_probabilites,
+            MathExerciseType.PUISSANCES: self._gen_puissances
         }
         
         generator = generators.get(exercise_type)
