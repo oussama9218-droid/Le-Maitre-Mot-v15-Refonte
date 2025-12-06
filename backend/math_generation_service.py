@@ -120,7 +120,10 @@ class MathGenerationService:
             MathExerciseType.VOLUME: self._gen_volume,
             MathExerciseType.STATISTIQUES: self._gen_statistiques,
             MathExerciseType.PROBABILITES: self._gen_probabilites,
-            MathExerciseType.PUISSANCES: self._gen_puissances
+            MathExerciseType.PUISSANCES: self._gen_puissances,
+            MathExerciseType.CERCLE: self._gen_cercle,
+            MathExerciseType.THALES: self._gen_thales,
+            MathExerciseType.TRIGONOMETRIE: self._gen_trigonometrie
         }
         
         generator = generators.get(exercise_type)
