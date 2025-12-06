@@ -202,6 +202,8 @@ const Step3GenerationApercu = ({
                         </Button>
                       </div>
                       <div className="text-gray-900 whitespace-pre-wrap">
+                        {/* Vérification critique avant rendu */}
+                        {!exercise.enonce && console.error("❌ Exercice sans énoncé détecté:", exercise)}
                         <MathRenderer content={exercise.enonce} />
                       </div>
                       
