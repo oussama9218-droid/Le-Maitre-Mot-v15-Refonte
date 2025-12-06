@@ -1059,4 +1059,282 @@ class MathGenerationService:
                 },
                 etapes_calculees=etapes,
                 resultat_final=resultat
+
+    def _gen_cercle(self, niveau: str, chapitre: str, difficulte: str) -> MathExerciseSpec:
+        """Génère un exercice sur les cercles (périmètre, aire)"""
+        
+        type_calcul = random.choice(["perimetre", "aire", "rayon_depuis_perimetre"])
+        
+        if type_calcul == "perimetre":
+            rayon = random.randint(3, 15)
+            perimetre = round(2 * math.pi * rayon, 2)
+            
+            etapes = [
+                f"Cercle de rayon {rayon} cm",
+                "Périmètre = 2 × π × rayon",
+                f"Périmètre = 2 × π × {rayon}",
+                f"Périmètre ≈ {perimetre} cm"
+            ]
+            
+            return MathExerciseSpec(
+                niveau=niveau,
+                chapitre=chapitre,
+                type_exercice=MathExerciseType.CERCLE,
+                difficulte=DifficultyLevel(difficulte),
+                parametres={
+                    "type": "perimetre",
+                    "rayon": rayon
+                },
+                solution_calculee={
+                    "perimetre": perimetre,
+                    "unite": "cm"
+                },
+                etapes_calculees=etapes,
+                resultat_final=f"{perimetre} cm"
+            )
+        
+        elif type_calcul == "aire":
+            rayon = random.randint(3, 12)
+            aire = round(math.pi * rayon * rayon, 2)
+            
+            etapes = [
+                f"Cercle de rayon {rayon} cm",
+                "Aire = π × rayon²",
+                f"Aire = π × {rayon}²",
+                f"Aire = π × {rayon * rayon}",
+                f"Aire ≈ {aire} cm²"
+            ]
+            
+            return MathExerciseSpec(
+                niveau=niveau,
+                chapitre=chapitre,
+                type_exercice=MathExerciseType.CERCLE,
+                difficulte=DifficultyLevel(difficulte),
+                parametres={
+                    "type": "aire",
+                    "rayon": rayon
+                },
+                solution_calculee={
+                    "aire": aire,
+                    "unite": "cm²"
+                },
+                etapes_calculees=etapes,
+                resultat_final=f"{aire} cm²"
+            )
+        
+        else:  # rayon depuis périmètre
+            rayon = random.randint(5, 12)
+            perimetre = round(2 * math.pi * rayon, 2)
+            
+            etapes = [
+                f"Périmètre du cercle = {perimetre} cm",
+                "Périmètre = 2 × π × rayon",
+                f"{perimetre} = 2 × π × rayon",
+                f"rayon = {perimetre} / (2 × π)",
+                f"rayon ≈ {rayon} cm"
+            ]
+            
+            return MathExerciseSpec(
+                niveau=niveau,
+                chapitre=chapitre,
+                type_exercice=MathExerciseType.CERCLE,
+                difficulte=DifficultyLevel(difficulte),
+                parametres={
+                    "type": "rayon_depuis_perimetre",
+                    "perimetre": perimetre
+                },
+                solution_calculee={
+                    "rayon": rayon,
+                    "unite": "cm"
+                },
+                etapes_calculees=etapes,
+                resultat_final=f"{rayon} cm"
+            )
+    
+    def _gen_thales(self, niveau: str, chapitre: str, difficulte: str) -> MathExerciseSpec:
+        """Génère un exercice sur le théorème de Thalès"""
+        
+        points = self._get_next_geometry_points()[:5]  # A, B, C, D, E
+        
+        # Configuration : triangle ABC avec droite (DE) parallèle à (BC)
+        # D sur [AB], E sur [AC]
+        
+        # Choisir des rapports simples
+        if difficulte == "facile":
+            rapports = [2, 3, 4]
+            k = random.choice(rapports)
+        else:
+            k = random.randint(2, 5)
+        
+        # Longueurs
+        AD = random.randint(3, 8)
+        AE = random.randint(3, 8)
+        
+        # DB = k × AD (pour que AB = AD + DB)
+        DB = k * AD
+        AB = AD + DB
+        
+        # EC = k × AE
+        EC = k * AE
+        AC = AE + EC
+        
+        # DE = BC / k (proportionnalité)
+        BC = random.randint(10, 20)
+        DE = round(BC / (k + 1), 2)
+        
+        etapes = [
+            f"Triangle {points[0]}{points[1]}{points[2]} avec (DE) // (BC)",
+            f"{points[3]} sur [{points[0]}{points[1]}], {points[4]} sur [{points[0]}{points[2]}]",
+            "D'après le théorème de Thalès :",
+            f"{points[0]}{points[3]}/{points[0]}{points[1]} = {points[0]}{points[4]}/{points[0]}{points[2]} = {points[3]}{points[4]}/{points[1]}{points[2]}",
+            f"{AD}/{AB} = {AE}/{AC}",
+            f"Rapport = {AD}/{AB} = {AD}/{AD + DB} ≈ {round(AD/AB, 2)}"
+        ]
+        
+        figure = GeometricFigure(
+            type="thales",
+            points=points[:5],
+            longueurs_connues={
+                f"{points[0]}{points[3]}": AD,
+                f"{points[3]}{points[1]}": DB,
+                f"{points[0]}{points[4]}": AE,
+                f"{points[4]}{points[2]}": EC
+            },
+            proprietes=["thales", f"({points[3]}{points[4]}) // ({points[1]}{points[2]})"]
+        )
+        
+        return MathExerciseSpec(
+            niveau=niveau,
+            chapitre=chapitre,
+            type_exercice=MathExerciseType.THALES,
+            difficulte=DifficultyLevel(difficulte),
+            parametres={
+                "points": points[:5],
+                "AD": AD,
+                "DB": DB,
+                "AE": AE,
+                "EC": EC,
+                "rapport": round(AD/AB, 2)
+            },
+            solution_calculee={
+                "AB": AB,
+                "AC": AC,
+                "rapport": round(AD/AB, 2)
+            },
+            etapes_calculees=etapes,
+            resultat_final=f"Rapport = {round(AD/AB, 2)}",
+            figure_geometrique=figure
+        )
+    
+    def _gen_trigonometrie(self, niveau: str, chapitre: str, difficulte: str) -> MathExerciseSpec:
+        """Génère un exercice de trigonométrie"""
+        
+        points = self._get_next_geometry_points()
+        
+        # Angles remarquables
+        angles_remarquables = {
+            30: {"sin": 0.5, "cos": round(math.sqrt(3)/2, 4), "tan": round(1/math.sqrt(3), 4)},
+            45: {"sin": round(math.sqrt(2)/2, 4), "cos": round(math.sqrt(2)/2, 4), "tan": 1.0},
+            60: {"sin": round(math.sqrt(3)/2, 4), "cos": 0.5, "tan": round(math.sqrt(3), 4)}
+        }
+        
+        if difficulte == "facile":
+            angle = random.choice([30, 45, 60])
+        else:
+            angle = random.randint(25, 70)
+        
+        type_calcul = random.choice(["cote_oppose", "cote_adjacent", "hypotenuse"])
+        
+        if type_calcul == "cote_oppose":
+            # Calculer le côté opposé avec sin
+            hypotenuse = random.randint(10, 20)
+            
+            if angle in angles_remarquables:
+                sin_angle = angles_remarquables[angle]["sin"]
+            else:
+                sin_angle = round(math.sin(math.radians(angle)), 4)
+            
+            cote_oppose = round(hypotenuse * sin_angle, 2)
+            
+            etapes = [
+                f"Triangle rectangle {points[0]}{points[1]}{points[2]}",
+                f"Angle en {points[0]} = {angle}°",
+                f"Hypoténuse {points[0]}{points[2]} = {hypotenuse} cm",
+                f"sin({angle}°) = côté opposé / hypoténuse",
+                f"sin({angle}°) = {points[1]}{points[2]} / {hypotenuse}",
+                f"{points[1]}{points[2]} = {hypotenuse} × sin({angle}°)",
+                f"{points[1]}{points[2]} ≈ {cote_oppose} cm"
+            ]
+            
+            resultat = cote_oppose
+            
+        elif type_calcul == "cote_adjacent":
+            # Calculer le côté adjacent avec cos
+            hypotenuse = random.randint(10, 20)
+            
+            if angle in angles_remarquables:
+                cos_angle = angles_remarquables[angle]["cos"]
+            else:
+                cos_angle = round(math.cos(math.radians(angle)), 4)
+            
+            cote_adjacent = round(hypotenuse * cos_angle, 2)
+            
+            etapes = [
+                f"Triangle rectangle {points[0]}{points[1]}{points[2]}",
+                f"Angle en {points[0]} = {angle}°",
+                f"Hypoténuse = {hypotenuse} cm",
+                f"cos({angle}°) = côté adjacent / hypoténuse",
+                f"côté adjacent = {hypotenuse} × cos({angle}°)",
+                f"côté adjacent ≈ {cote_adjacent} cm"
+            ]
+            
+            resultat = cote_adjacent
+            
+        else:  # hypotenuse
+            cote_oppose = random.randint(5, 12)
+            
+            if angle in angles_remarquables:
+                sin_angle = angles_remarquables[angle]["sin"]
+            else:
+                sin_angle = round(math.sin(math.radians(angle)), 4)
+            
+            hypotenuse = round(cote_oppose / sin_angle, 2)
+            
+            etapes = [
+                f"Triangle rectangle, angle = {angle}°",
+                f"Côté opposé = {cote_oppose} cm",
+                f"sin({angle}°) = {cote_oppose} / hypoténuse",
+                f"hypoténuse = {cote_oppose} / sin({angle}°)",
+                f"hypoténuse ≈ {hypotenuse} cm"
+            ]
+            
+            resultat = hypotenuse
+        
+        figure = GeometricFigure(
+            type="triangle_rectangle",
+            points=points[:3],
+            rectangle_en=points[1],
+            angles_connus={points[0]: angle}
+        )
+        
+        return MathExerciseSpec(
+            niveau=niveau,
+            chapitre=chapitre,
+            type_exercice=MathExerciseType.TRIGONOMETRIE,
+            difficulte=DifficultyLevel(difficulte),
+            parametres={
+                "triangle": f"{points[0]}{points[1]}{points[2]}",
+                "angle": angle,
+                "type_calcul": type_calcul
+            },
+            solution_calculee={
+                "resultat": resultat,
+                "unite": "cm",
+                "angle": angle
+            },
+            etapes_calculees=etapes,
+            resultat_final=f"{resultat} cm",
+            figure_geometrique=figure
+        )
+
             )
