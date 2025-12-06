@@ -71,6 +71,7 @@ class MathGenerationService:
             # 6e
             "Nombres entiers et décimaux": [MathExerciseType.CALCUL_DECIMAUX],
             "Périmètres et aires": [MathExerciseType.PERIMETRE_AIRE, MathExerciseType.RECTANGLE],
+            "Aires": [MathExerciseType.PERIMETRE_AIRE, MathExerciseType.CERCLE],
             "Géométrie - Triangles et quadrilatères": [MathExerciseType.RECTANGLE, MathExerciseType.PERIMETRE_AIRE],
             
             # Chapitres multi-niveaux (6e, 4e, 5e, 3e)
