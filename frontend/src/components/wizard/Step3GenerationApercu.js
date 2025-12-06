@@ -218,6 +218,16 @@ const Step3GenerationApercu = ({
                         </div>
                       )}
                       
+                      {/* Display SVG geometric figure if present */}
+                      {exercise.figure_svg && (
+                        <div className="mt-4 flex justify-center">
+                          <div 
+                            className="border border-gray-300 rounded-lg shadow-sm bg-white p-4"
+                            dangerouslySetInnerHTML={{ __html: exercise.figure_svg }}
+                          />
+                        </div>
+                      )}
+                      
                       {/* NOUVEAU: Display geographic document if present */}
                       {exercise.document && (
                         <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
