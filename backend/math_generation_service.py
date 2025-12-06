@@ -722,7 +722,7 @@ class MathGenerationService:
             
             etapes = [
                 f"Cube d'arête {arete} cm",
-                f"Volume = arête³",
+                "Volume = arête³",
                 f"Volume = {arete}³ = {arete} × {arete} × {arete}",
                 f"Volume = {volume} cm³"
             ]
@@ -934,7 +934,7 @@ class MathGenerationService:
             f"Expérience : {situation['contexte']}",
             f"Nombre d'issues possibles : {situation['nb_issues']}",
             f"Nombre d'issues favorables ({situation['question']}) : {situation['issues_favorables']}",
-            f"Probabilité = issues favorables / issues possibles",
+            "Probabilité = issues favorables / issues possibles",
             f"Probabilité = {situation['issues_favorables']} / {situation['nb_issues']}",
             f"Probabilité = {probabilite_fraction} = {probabilite:.2f}"
         ]
