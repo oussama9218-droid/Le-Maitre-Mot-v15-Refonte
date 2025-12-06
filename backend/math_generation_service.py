@@ -86,6 +86,7 @@ class MathGenerationService:
             
             # 5e  
             "Triangles": [MathExerciseType.TRIANGLE_QUELCONQUE, MathExerciseType.TRIANGLE_RECTANGLE],
+            "Aires et périmètres": [MathExerciseType.PERIMETRE_AIRE, MathExerciseType.CERCLE, MathExerciseType.RECTANGLE],
             
             # 4e
             "Théorème de Pythagore": [MathExerciseType.TRIANGLE_RECTANGLE],
