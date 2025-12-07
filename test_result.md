@@ -36,10 +36,17 @@ Renforcement des tests automatiques de cohérence pour tous les générateurs g�
 - Maintenir le taux de cohérence >= 85% pour tous les types d'exercices
 
 ## Test Status Summary
-- **Geometric Coherence**: ✅ PASSED (100%)
-- **SVG Generation**: ✅ PASSED (from previous session)
-- **Thales Coherence**: ✅ PASSED (from previous session)
+- **End-to-End API Coherence**: ⚠️ PARTIALLY PASSED (62.5% coherence rate)
+- **Geometric Coherence (Unit Tests)**: ✅ PASSED (100% - from previous session)
+- **SVG Generation**: ✅ PASSED (100% - all exercises generate SVG)
+- **Thales Coherence**: ✅ PASSED (100% - non-regression confirmed)
 - **System Stability**: ✅ OPERATIONAL
+
+## Priority Issues for Main Agent
+1. **HIGH PRIORITY**: Fix cercles generator - rayon not defined in figure_geometrique
+2. **HIGH PRIORITY**: Fix rectangles generator - ensure 4 points are defined
+3. **MEDIUM PRIORITY**: Fix trigonométrie phantom point issue
+4. **LOW PRIORITY**: Add "Périmètres et aires" chapter for 6e level or update test
 
 ## Incorporate User Feedback
 - User confirmed Thales correction is working correctly ✅
