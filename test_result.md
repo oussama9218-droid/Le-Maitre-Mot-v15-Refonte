@@ -46,3 +46,52 @@ Renforcement des tests automatiques de cohérence pour tous les générateurs g�
 - User requested focus on testing other generators for coherence ✅
 - All geometric generators now have comprehensive coherence tests ✅
 
+## Latest Test Session - End-to-End API Coherence Testing
+
+### Test Focus
+Test complet de la cohérence des générateurs géométriques après amélioration des fallbacks - End-to-End API Testing
+
+### Tests Executed
+
+#### 1. Test API end-to-end pour tous les générateurs géométriques
+**Command**: `python backend_test.py coherence`
+**Result**: ⚠️ PARTIALLY PASSED (62.5% coherence rate)
+**Details**:
+- **Théorème de Pythagore (4e)**: ✅ 100% cohérent (3/3 exercices)
+- **Trigonométrie (3e)**: ⚠️ 66.7% cohérent (2/3 exercices) - 1 point fantôme détecté
+- **Aires - Cercles (6e)**: ❌ 0% cohérent (0/5 exercices) - Rayon non défini dans figure
+- **Aires et périmètres - Rectangles (5e)**: ⚠️ 40% cohérent (2/5 exercices) - Points manquants, termes spécifiques manquants
+- **Périmètres et aires - Mix (6e)**: ❌ ÉCHEC - Chapitre non disponible pour 6e
+- **Triangles quelconques (5e)**: ✅ 100% cohérent (5/5 exercices)
+- **Théorème de Thalès (3e)**: ✅ 100% cohérent (3/3 exercices) - Non-régression confirmée
+
+### Key Findings
+1. ✅ **Pythagore, Triangles quelconques, Thalès**: Fonctionnent parfaitement (100% cohérence)
+2. ⚠️ **Trigonométrie**: Quasi-parfait (66.7%) - 1 point fantôme 'L' détecté
+3. ❌ **Cercles**: Problème majeur - Rayon non défini dans spec_mathematique.figure_geometrique
+4. ❌ **Rectangles**: Problème modéré - Points manquants (1 au lieu de 4) et termes spécifiques
+5. ❌ **Mix Périmètres/Aires**: Chapitre inexistant pour 6e niveau
+6. ✅ **SVG Generation**: 100% des exercices ont un SVG généré
+7. ✅ **Énoncés**: Tous >10 caractères, aucun énoncé vide
+
+### Issues Critiques Identifiées
+1. **Cercles - Rayon manquant**: `figure_geometrique.rayon` non défini dans spec_mathematique
+2. **Rectangles - Points insuffisants**: Seulement 1-3 points au lieu de 4 requis
+3. **Trigonométrie - Point fantôme**: Point 'L' mentionné dans énoncé mais absent de la figure
+4. **Chapitre manquant**: "Périmètres et aires" non disponible pour 6e (erreur de configuration)
+
+### Statistiques Globales
+- **Total exercices testés**: 24 (sur 29 prévus)
+- **Exercices cohérents**: 15/24 (62.5%)
+- **Points fantômes détectés**: 1
+- **SVG manquants**: 0
+- **Générations échouées**: 1 (chapitre inexistant)
+- **Temps de génération moyen**: ~15 secondes par lot
+
+### Recommendations
+1. **URGENT - Cercles**: Corriger la génération du rayon dans figure_geometrique
+2. **URGENT - Rectangles**: Assurer 4 points définis pour tous les rectangles
+3. **Moyen - Trigonométrie**: Vérifier cohérence points énoncé/figure
+4. **Mineur - Configuration**: Ajouter "Périmètres et aires" pour 6e ou corriger le test
+5. **Maintenir**: Pythagore, Triangles, Thalès fonctionnent parfaitement
+
