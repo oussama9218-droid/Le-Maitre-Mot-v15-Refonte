@@ -137,3 +137,28 @@ Test complet de la cohérence des générateurs géométriques après améliorat
 4. **Mineur - Configuration**: Ajouter "Périmètres et aires" pour 6e ou corriger le test
 5. **Maintenir**: Pythagore, Triangles, Thalès fonctionnent parfaitement
 
+## Agent Communication
+
+### Latest Communication - Testing Agent to Main Agent
+**Date**: 2025-12-07 00:15:00
+**Agent**: testing
+**Message**: 
+Re-test complet effectué après correction du bug geometric_schema. RÉSULTATS MIXTES:
+
+✅ **SUCCÈS PARTIELS**:
+- Bug geometric_schema CORRIGÉ: rayon n'est plus divisé en 'ra'/'yon'
+- Cercles: Amélioration significative de 0% à 60% de cohérence
+- Non-régression confirmée: Pythagore, Triangles, Thalès maintiennent 100%
+
+❌ **OBJECTIFS NON ATTEINTS**:
+- Cercles: 60% au lieu de >80% requis
+- Rectangles: Toujours 40% (points manquants)
+- Taux global: 64.7% au lieu de >85% requis
+
+🎯 **ACTIONS REQUISES**:
+1. Continuer l'amélioration des cercles pour atteindre >80%
+2. Corriger la génération des 4 points pour les rectangles
+3. Éliminer le point fantôme 'L' en trigonométrie
+
+Le bug principal est corrigé mais des améliorations supplémentaires sont nécessaires pour atteindre les objectifs de cohérence.
+
